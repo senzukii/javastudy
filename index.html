@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java Design Patterns — Guide d'étude</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c28;
+    --border: #2a2a3d;
+    --accent: #7c6fff;
+    --accent2: #ff6b6b;
+    --accent3: #43e97b;
+    --accent4: #f7971e;
+    --text: #e8e8f0;
+    --text2: #9090b0;
+    --text3: #5a5a80;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 2rem;
+    text-align: center;
+  }
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(124,111,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,111,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .glow {
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(124,111,255,0.08) 0%, transparent 70%);
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 800px; }
+  .badge {
+    display: inline-block;
+    background: rgba(124,111,255,0.15);
+    border: 1px solid rgba(124,111,255,0.3);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.35rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 2rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #fff 0%, #9090c0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .subtitle {
+    font-size: 1.1rem;
+    color: var(--text2);
+    max-width: 500px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+  .nav-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .nav-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .nav-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: 16px;
+  }
+  .nav-card:hover { transform: translateY(-4px); border-color: transparent; }
+  .nav-card:hover::before { opacity: 1; }
+
+  .nav-card.dp::before { background: linear-gradient(135deg, rgba(124,111,255,0.15), rgba(124,111,255,0.05)); border: 1px solid rgba(124,111,255,0.4); }
+  .nav-card.dp:hover { box-shadow: 0 20px 60px rgba(124,111,255,0.2); }
+  .nav-card.solid::before { background: linear-gradient(135deg, rgba(67,233,123,0.15), rgba(67,233,123,0.05)); border: 1px solid rgba(67,233,123,0.4); }
+  .nav-card.solid:hover { box-shadow: 0 20px 60px rgba(67,233,123,0.2); }
+  .nav-card.qcm::before { background: linear-gradient(135deg, rgba(255,107,107,0.15), rgba(255,107,107,0.05)); border: 1px solid rgba(255,107,107,0.4); }
+  .nav-card.qcm:hover { box-shadow: 0 20px 60px rgba(255,107,107,0.2); }
+  .nav-card.resume::before { background: linear-gradient(135deg, rgba(247,151,30,0.15), rgba(247,151,30,0.05)); border: 1px solid rgba(247,151,30,0.4); }
+  .nav-card.resume:hover { box-shadow: 0 20px 60px rgba(247,151,30,0.2); }
+
+  .card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+    position: relative;
+    z-index: 1;
+  }
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 1;
+  }
+  .card-desc {
+    font-size: 0.85rem;
+    color: var(--text2);
+    line-height: 1.5;
+    position: relative;
+    z-index: 1;
+    font-weight: 300;
+  }
+  .dp-count {
+    margin-top: 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text3);
+    position: relative;
+    z-index: 1;
+  }
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text3);
+    font-size: 0.8rem;
+    font-family: 'DM Mono', monospace;
+    position: relative;
+    z-index: 1;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-content { animation: fadeUp 0.8s ease both; }
+  .nav-cards { animation: fadeUp 0.8s ease 0.2s both; }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="glow"></div>
+
+<div class="hero">
+  <div class="hero-content">
+    <span class="badge">Java · Design Patterns · SOLID</span>
+    <h1>Guide d'étude</h1>
+    <p class="subtitle">Tous les design patterns et principes SOLID vus en cours, avec diagrammes UML, exemples concrets et QCM d'entraînement.</p>
+  </div>
+
+  <nav class="nav-cards">
+    <a href="design-patterns.html" class="nav-card dp">
+      <span class="card-icon">⬡</span>
+      <div class="card-title">Design Patterns</div>
+      <div class="card-desc">Création, Structure, Comportement — avec diagrammes UML et exemples concrets</div>
+      <div class="dp-count">9 patterns · 3 catégories</div>
+    </a>
+    <a href="solid.html" class="nav-card solid">
+      <span class="card-icon">◈</span>
+      <div class="card-title">Principes SOLID</div>
+      <div class="card-desc">Les 5 principes fondamentaux de la conception orientée objet</div>
+      <div class="dp-count">5 principes</div>
+    </a>
+    <a href="qcm.html" class="nav-card qcm">
+      <span class="card-icon">◎</span>
+      <div class="card-title">QCM</div>
+      <div class="card-desc">Entraînement style examen oral — Design Patterns et SOLID</div>
+      <div class="dp-count">Questions type examen</div>
+    </a>
+    <a href="resume.html" class="nav-card resume">
+      <span class="card-icon">◇</span>
+      <div class="card-title">Résumé</div>
+      <div class="card-desc">Fiches mémo — phrases clés, différences entre patterns</div>
+      <div class="dp-count">Révision rapide</div>
+    </a>
+  </nav>
+</div>
+
+<div class="footer">fait pour ton exam · bonne chance 🎓</div>
+</body>
+</html>

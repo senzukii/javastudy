@@ -1,0 +1,2059 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QCM — Java Study</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.question-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.question-text {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+.question-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+.question-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text3);
+}
+.cat-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 20px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+.cat-creation  { background: rgba(247,151,30,0.15); color: #f7971e; border: 1px solid rgba(247,151,30,0.3); }
+.cat-structure { background: rgba(67,233,123,0.12); color: #43e97b; border: 1px solid rgba(67,233,123,0.25); }
+.cat-comportement { background: rgba(124,111,255,0.15); color: #7c6fff; border: 1px solid rgba(124,111,255,0.3); }
+.cat-solid { background: rgba(255,107,107,0.12); color: #ff6b6b; border: 1px solid rgba(255,107,107,0.25); }
+.options { display: flex; flex-direction: column; gap: 0.5rem; }
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--surface2);
+  font-size: 0.9rem;
+  color: var(--text2);
+  text-align: left;
+  width: 100%;
+}
+.option:hover:not(:disabled) { border-color: var(--border2); color: var(--text); }
+.option.correct { border-color: var(--accent3); background: rgba(67,233,123,0.1); color: var(--accent3); }
+.option.wrong { border-color: var(--accent2); background: rgba(255,107,107,0.1); color: var(--accent2); }
+.option.revealed-correct { border-color: var(--accent3); background: rgba(67,233,123,0.08); color: var(--accent3); }
+.option-letter {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  background: var(--surface3);
+  border-radius: 4px;
+  padding: 0.15rem 0.4rem;
+  min-width: 22px;
+  text-align: center;
+  color: var(--text3);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+.option.correct .option-letter { background: var(--accent3); color: #000; }
+.option.wrong .option-letter { background: var(--accent2); color: #fff; }
+.option.revealed-correct .option-letter { background: var(--accent3); color: #000; }
+.explanation {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface2);
+  border-left: 3px solid var(--accent3);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.85rem;
+  color: var(--text2);
+  display: none;
+  line-height: 1.6;
+}
+.explanation.visible { display: block; }
+.explanation strong { color: var(--accent3); }
+.score-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.score-number { font-family: 'DM Serif Display', serif; font-size: 2.5rem; }
+.score-label { color: var(--text2); font-size: 0.85rem; }
+.progress-track { width: 200px; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--accent3); border-radius: 3px; transition: width 0.4s ease; }
+.action-btn {
+  padding: 0.5rem 1.25rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text2);
+  cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+.action-btn:hover { border-color: var(--accent); color: var(--accent); }
+.action-btn.primary { border-color: var(--accent3); color: var(--accent3); }
+.action-btn.primary:hover { background: rgba(67,233,123,0.1); }
+.btn-row { margin-left: auto; display: flex; gap: 0.5rem; }
+.sidebar-nav-home {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1.5rem; color: var(--text3);
+  text-decoration: none; font-size: 0.8rem;
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 0.5rem; transition: color 0.2s;
+}
+.sidebar-nav-home:hover { color: var(--text); }
+.tirage-info {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text3);
+  margin-bottom: 1.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="page-wrapper">
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a href="index.html">⬡ Java Study Guide</a>
+    <span>QCM d'entraînement</span>
+  </div>
+  <a href="index.html" class="sidebar-nav-home">← Accueil</a>
+  <div class="sidebar-section">Catégories</div>
+  <a href="#" class="sidebar-link" style="color:var(--text3);font-size:0.78rem;pointer-events:none">
+    <span class="cat-badge cat-creation">Création</span>&nbsp; 8 questions
+  </a>
+  <a href="#" class="sidebar-link" style="color:var(--text3);font-size:0.78rem;pointer-events:none">
+    <span class="cat-badge cat-structure">Structure</span>&nbsp; 6 questions
+  </a>
+  <a href="#" class="sidebar-link" style="color:var(--text3);font-size:0.78rem;pointer-events:none">
+    <span class="cat-badge cat-comportement">Comportement</span>&nbsp; 7 questions
+  </a>
+  <a href="#" class="sidebar-link" style="color:var(--text3);font-size:0.78rem;pointer-events:none">
+    <span class="cat-badge cat-solid">SOLID</span>&nbsp; 9 questions
+  </a>
+  <div class="sidebar-section" style="margin-top:1rem">Actions</div>
+  <a href="#" class="sidebar-link" onclick="newDraw(); return false;">Nouveau tirage</a>
+  <a href="#" class="sidebar-link" onclick="resetAll(); return false;">Recommencer</a>
+</aside>
+
+<main class="main-content">
+  <h1 class="page-title">QCM d'entraînement</h1>
+  <p class="page-subtitle">30 questions tirées aléatoirement parmi un pool de 90 — couvrant tous les sujets à chaque tirage.</p>
+
+  <div class="score-bar">
+    <div>
+      <div class="score-number" id="score-display">0 / 0</div>
+      <div class="score-label">bonnes réponses</div>
+    </div>
+    <div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+      <div class="score-label" style="margin-top:0.3rem" id="progress-label">0 répondu(es)</div>
+    </div>
+    <div class="btn-row">
+      <button class="action-btn" onclick="resetAll()">Recommencer</button>
+      <button class="action-btn primary" onclick="newDraw()">Nouveau tirage</button>
+    </div>
+  </div>
+
+  <div class="tirage-info" id="tirage-info"></div>
+  <div id="questions-container"></div>
+</main>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// QUESTION POOL
+// ─────────────────────────────────────────────
+const POOL = {
+  creation: [
+    {
+      q: "Quelle est la différence fondamentale entre Simple Factory et Factory Method ?",
+      opts: [
+        "Le Simple Factory utilise des interfaces, le Factory Method non",
+        "Le Simple Factory centralise la création dans une classe — ajouter un produit implique de la modifier. Le Factory Method délègue aux sous-classes — ajouter un produit = nouvelle sous-classe",
+        "Le Factory Method ne peut créer qu'un seul type de produit, le Simple Factory en crée plusieurs",
+        "Il n'y a pas de différence, ce sont deux noms pour le même pattern"
+      ],
+      correct: 1,
+      expl: "Le Simple Factory viole le principe <strong>Open/Closed</strong> car on doit modifier la Fabrique pour chaque nouveau produit. Le Factory Method le respecte : chaque CréateurConcret gère ses produits — ajouter un nouveau contexte = créer une nouvelle sous-classe sans toucher au code existant."
+    },
+    {
+      q: "Dans une Abstract Factory avec 3 types de produits (Pâte, Sauce, Fromage), combien de méthodes l'interface FabriqueAbstraite doit-elle déclarer ?",
+      opts: [
+        "1 méthode générique creerProduit(type)",
+        "2 méthodes",
+        "3 méthodes — une par type de produit de la famille",
+        "Autant de méthodes que de FabriquesConcretes"
+      ],
+      correct: 2,
+      expl: "L'Abstract Factory déclare <strong>une méthode par type de produit dans la famille</strong> : creerPate(), creerSauce(), creerFromage(). Chaque FabriqueConcrete implémente ces 3 méthodes pour garantir la cohérence de la famille."
+    },
+    {
+      q: "Dans le pattern Builder, quelle est la différence de rôle entre le Directeur et le BuilderConcret ?",
+      opts: [
+        "Le Directeur crée l'objet final, le BuilderConcret définit juste les étapes",
+        "Le Directeur choisit quel Builder utiliser, le BuilderConcret choisit l'ordre des étapes",
+        "Il n'y a pas de différence, les deux construisent l'objet",
+        "Le Directeur connaît l'ordre des étapes, le BuilderConcret sait comment réaliser chaque étape"
+      ],
+      correct: 3,
+      expl: "<strong>Le Directeur orchestre</strong> l'ordre (construirePain → construireViande → construireSauce) sans savoir ce que fait concrètement chaque étape. <strong>Le BuilderConcret sait</strong> qu'un BurgerPoulet utilise du pain complet. C'est le Client qui choisit quel BuilderConcret passer au Directeur."
+    },
+    {
+      q: "Quel problème le pattern Builder résout-il principalement ?",
+      opts: [
+        "La surcharge du constructeur avec de nombreux paramètres ET la construction complexe étape par étape",
+        "La création d'une famille cohérente de produits liés",
+        "L'ajout de nouvelles fonctionnalités sans modifier le code existant",
+        "La notification automatique de plusieurs objets lors d'un changement d'état"
+      ],
+      correct: 0,
+      expl: "Le Builder s'attaque à deux problèmes liés : <strong>l'illisibilité d'un constructeur</strong> avec trop de paramètres (new Burger(\"complet\",\"poulet\",\"salade\",...)) ET la nécessité de <strong>construire un objet complexe étape par étape</strong> dans un ordre précis."
+    },
+    {
+      q: "Dans Factory Method, quel participant décide concrètement quelle classe instancier ?",
+      opts: [
+        "Le Client qui commande la pizza",
+        "Le CréateurConcret — il surclasse creerProduit() et décide d'instancier MargheritaCharleroi",
+        "La classe abstraite Créateur",
+        "L'interface Produit"
+      ],
+      correct: 1,
+      expl: "C'est le <strong>CréateurConcret</strong> (ex : PizzeriaCharleroi) qui implémente creerProduit() et retourne new MargheritaCharleroi(). La classe abstraite Créateur déclare la méthode mais ne l'implémente pas."
+    },
+    {
+      q: "Dans Simple Factory, que se passe-t-il quand on veut ajouter un nouveau type de produit ?",
+      opts: [
+        "On crée une nouvelle sous-classe de Fabrique",
+        "On modifie l'interface Produit",
+        "On doit modifier la classe Fabrique (viole Open/Closed)",
+        "On crée une nouvelle interface sans rien modifier"
+      ],
+      correct: 2,
+      expl: "C'est <strong>la limite du Simple Factory</strong> : toute la logique if/else est dans la Fabrique. Ajouter Calzone → rouvrir PizzeriaFactory et ajouter un cas. C'est pourquoi le <strong>Factory Method</strong> a été inventé pour respecter OCP."
+    },
+    {
+      q: "Parmi les 3 patterns Factory, lequel ou lesquels respectent le principe Open/Closed ?",
+      opts: [
+        "Uniquement Simple Factory",
+        "Uniquement Abstract Factory",
+        "Aucun des trois ne le respecte",
+        "Factory Method ET Abstract Factory — ajouter un produit = nouvelle sous-classe, pas de modification"
+      ],
+      correct: 3,
+      expl: "<strong>Simple Factory viole OCP</strong> (modifier la Fabrique à chaque nouveau produit). <strong>Factory Method</strong> et <strong>Abstract Factory</strong> le respectent : on étend via de nouvelles sous-classes sans toucher au code existant."
+    },
+    {
+      q: "Quelle est la différence entre Factory Method et Abstract Factory ?",
+      opts: [
+        "Factory Method crée un seul type de produit par sous-classe. Abstract Factory crée une famille complète de produits cohérents",
+        "Abstract Factory utilise des méthodes abstraites, Factory Method non",
+        "Factory Method est pour les interfaces, Abstract Factory pour les classes abstraites",
+        "Ils font exactement la même chose avec une syntaxe différente"
+      ],
+      correct: 0,
+      expl: "<strong>Factory Method</strong> : PizzeriaCharleroi crée des pizzas Charleroi. <strong>Abstract Factory</strong> : IngredientsItaliens crée Pate + Sauce + Fromage cohérents ensemble. La différence : 1 type de produit vs une famille entière."
+    },
+    {
+      q: "Dans Abstract Factory, qu'est-ce qu'une 'famille de produits' ?",
+      opts: [
+        "Un ensemble de produits du même type",
+        "Une liste de produits stockés dans la Fabrique",
+        "Un groupe de produits liés conçus pour être utilisés ensemble (ex: ingrédients italiens : PateFine + SauceTomate + Mozzarella)",
+        "Les produits créés par une seule méthode de fabrique"
+      ],
+      correct: 2,
+      expl: "Une <strong>famille</strong> garantit la cohérence : tous les ingrédients italiens vont ensemble, tous les ingrédients belges vont ensemble. L'Abstract Factory empêche de mélanger PateFine italienne avec Sauce belge — la FabriqueConcrete produit toujours un ensemble cohérent."
+    },
+    {
+      q: "Le pattern Builder peut-il fonctionner sans Directeur ?",
+      opts: [
+        "Non, le Directeur est obligatoire dans le pattern",
+        "Oui — le Client peut appeler directement les méthodes de construction dans l'ordre qu'il veut",
+        "Non, sans Directeur les étapes de construction ne sont pas définies",
+        "Seulement si on utilise une interface Builder stricte"
+      ],
+      correct: 1,
+      expl: "Le Directeur est <strong>optionnel</strong>. Le Client peut appeler builder.construirePain(), builder.construireViande()... directement. Le Directeur est utile quand on veut réutiliser une séquence précise d'étapes (ex : toujours construire dans le même ordre)."
+    },
+    {
+      q: "Dans Factory Method, PizzeriaBruxelles et PizzeriaCharleroi sont des... ?",
+      opts: [
+        "CréateursConcretes — ils implémentent creerProduit() chacun à leur façon",
+        "ProduitsConcretes — ce sont les pizzas créées par la fabrique",
+        "Fabriques simples — ils centralisent la création dans une méthode",
+        "Interfaces — ils définissent le contrat de création"
+      ],
+      correct: 0,
+      expl: "PizzeriaBruxelles et PizzeriaCharleroi sont des <strong>CréateursConcretes</strong>. Ils héritent de Pizzeria (abstraite) et implémentent creerPizza() chacun pour leur contexte. Ce sont eux qui décident des ProduitsConcrets à instancier."
+    },
+    {
+      q: "Dans Simple Factory, le Client connaît-il la classe concrète de l'objet créé ?",
+      opts: [
+        "Oui, il l'instancie directement avant de la passer à la Fabrique",
+        "Oui, il reçoit un objet avec son type concret explicite",
+        "Non, le Client n'a aucune connaissance du système de création",
+        "Non — il reçoit uniquement l'interface Produit. C'est la Fabrique qui connaît Margherita, Regina, Calzone"
+      ],
+      correct: 3,
+      expl: "C'est <strong>le but du Simple Factory</strong> : le Client demande getPizza(\"margherita\") et reçoit un objet de type Pizza (interface). Il ne sait pas que c'est une Margherita concrète. Le knowledge de l'instanciation est centralisé dans PizzeriaFactory."
+    },
+    {
+      q: "Dans Abstract Factory, combien de FabriquesConcretes sont nécessaires pour gérer 2 familles (italienne et belge) ?",
+      opts: [
+        "1 FabriqueConcrete avec un paramètre de type famille",
+        "2 FabriquesConcretes — une par famille",
+        "Autant que de types de produits dans la famille",
+        "1 seule avec des méthodes surchargées par famille"
+      ],
+      correct: 1,
+      expl: "<strong>2 FabriquesConcretes</strong> : IngredientsItaliens et IngredientsBelges. Chacune implémente toutes les méthodes de l'interface (creerPate, creerSauce, creerFromage) mais retourne des produits cohérents avec sa famille."
+    },
+    {
+      q: "Dans Builder, que retourne la méthode getResultat() ?",
+      opts: [
+        "L'objet complexe complètement construit (ex: le Burger avec toutes ses parties assemblées)",
+        "L'état d'avancement de la construction en pourcentage",
+        "Le Directeur pour permettre le chaînage d'appels",
+        "Une liste des parties construites séparément"
+      ],
+      correct: 0,
+      expl: "getResultat() retourne <strong>le Produit final</strong> — l'objet complexe assemblé étape par étape. C'est l'aboutissement de toutes les construirePartie() appelées par le Directeur. Dans l'exemple Burger : un Burger complet avec pain, viande et sauce."
+    },
+    {
+      q: "Pourquoi le Simple Factory 'centralise-t-il' la création ?",
+      opts: [
+        "Car il utilise le mot-clé static sur ses méthodes",
+        "Car il est en haut de la hiérarchie d'héritage",
+        "Car il référence toutes les interfaces du projet",
+        "Car toute la logique de sélection (quel type créer selon le paramètre) est dans une seule classe, au lieu d'être éparpillée dans le code client"
+      ],
+      correct: 3,
+      expl: "<strong>Centraliser</strong> = regrouper les if/else ou switch de création dans une seule classe (PizzeriaFactory). Avant : chaque appelant faisait son propre if type==\"margherita\" new Margherita(). Après : un seul endroit à modifier si la logique de création change."
+    },
+    {
+      q: "Quel pattern Factory utilise une méthode abstraite creerProduit() dans une classe abstraite Créateur ?",
+      opts: [
+        "Simple Factory",
+        "Factory Method",
+        "Abstract Factory",
+        "Builder"
+      ],
+      correct: 1,
+      expl: "<strong>Factory Method</strong> : la classe abstraite Créateur déclare creerProduit() abstraite. Chaque CréateurConcret l'implémente à sa façon. La méthode de création est héritée et surchargée — c'est le 'Method' dans Factory Method."
+    },
+    {
+      q: "Dans Abstract Factory, si on veut ajouter un nouveau type de produit (ex: ajouter Dessert à la famille), que faut-il faire ?",
+      opts: [
+        "Ajouter un paramètre à la méthode creerProduit() existante",
+        "Créer une nouvelle FabriqueConcrete uniquement",
+        "Modifier l'interface FabriqueAbstraite ET toutes les FabriquesConcretes — c'est un inconvénient du pattern",
+        "Créer une nouvelle interface produit sans rien modifier d'autre"
+      ],
+      correct: 2,
+      expl: "C'est <strong>la limite de l'Abstract Factory</strong> : ajouter un nouveau type à la famille (creerDessert()) nécessite de modifier l'interface + toutes les FabriquesConcretes existantes. C'est difficile à étendre en largeur (nouveaux types), mais facile en profondeur (nouvelles familles)."
+    },
+    {
+      q: "Dans quel pattern de création la même séquence de construction peut-elle produire différents objets selon l'implémentation passée ?",
+      opts: [
+        "Simple Factory",
+        "Factory Method",
+        "Abstract Factory",
+        "Builder — le Directeur orchestre toujours les mêmes étapes, mais BurgerPoulet et BurgerBoeuf les implémentent différemment"
+      ],
+      correct: 3,
+      expl: "Dans <strong>Builder</strong>, le Directeur appelle toujours construirePain() → construireViande() → construireSauce(). Mais si on lui passe BurgerPoulet, on obtient un burger poulet; si on lui passe BurgerBoeuf, on obtient un burger boeuf. Même séquence, résultats différents."
+    },
+    {
+      q: "Dans Factory Method, MargheritaCharleroi et MargheritaBruxelles sont des... ?",
+      opts: [
+        "ProduitsConcretes — implémentations concrètes de l'interface Pizza, spécifiques à chaque contexte",
+        "CréateursConcretes — ils créent d'autres pizzas",
+        "Fabriques abstraites — ils définissent une famille",
+        "Directeurs — ils orchestrent la création"
+      ],
+      correct: 0,
+      expl: "<strong>ProduitsConcretes</strong> : MargheritaCharleroi et MargheritaBruxelles implémentent l'interface Pizza, mais avec des particularités locales. Chaque CréateurConcret (PizzeriaCharleroi / PizzeriaBruxelles) crée sa propre version concrète du produit."
+    },
+    {
+      q: "Le Directeur dans Builder peut-il travailler avec différents BuilderConcrets ?",
+      opts: [
+        "Oui — c'est l'intérêt : le Client passe le BuilderConcret au Directeur, qui orchestre toujours les mêmes étapes",
+        "Non, le Directeur est couplé à un seul BuilderConcret à la compilation",
+        "Non, chaque Directeur ne peut gérer qu'un seul type de Builder",
+        "Oui, mais seulement si les BuilderConcrets héritent du même Directeur"
+      ],
+      correct: 0,
+      expl: "Oui — <strong>c'est le principe</strong> : cuisinier.construire(new BurgerPoulet()) puis cuisinier.construire(new BurgerBoeuf()). Le Directeur (Cuisinier) appelle toujours les mêmes étapes dans le même ordre, mais délègue le 'comment' au BuilderConcret reçu en paramètre."
+    },
+    {
+      q: "Dans Simple Factory, qui contient le switch ou if/else qui choisit quelle classe concrète créer ?",
+      opts: [
+        "Le Client qui passe le type en paramètre",
+        "L'interface Produit",
+        "La classe Fabrique (PizzeriaFactory, BurgerFactory...)",
+        "Les classes concrètes (Margherita, Calzone...)"
+      ],
+      correct: 2,
+      expl: "<strong>La Fabrique</strong> contient le if/else ou switch : if (type.equals(\"margherita\")) return new Margherita(); ... C'est pourquoi on dit qu'elle centralise la création : un seul endroit contient toute la logique de sélection."
+    },
+    {
+      q: "Lequel des patterns Factory crée PLUSIEURS types de produits différents par classe concrète ?",
+      opts: [
+        "Simple Factory",
+        "Factory Method",
+        "Les deux créent plusieurs types par définition",
+        "Abstract Factory — chaque FabriqueConcrete implémente creerPate(), creerSauce(), creerFromage()"
+      ],
+      correct: 3,
+      expl: "<strong>Abstract Factory</strong> : IngredientsItaliens crée des Pate ET des Sauce ET des Fromage. <strong>Factory Method</strong> : PizzeriaCharleroi crée uniquement des pizzas (un seul type de produit). Simple Factory : une classe, plusieurs produits du même type via paramètre."
+    },
+    {
+      q: "Quel pattern de création est le mieux adapté pour construire un objet dont les propriétés sont optionnelles ou nombreuses ?",
+      opts: [
+        "Simple Factory — il centralise la création",
+        "Factory Method — il délègue aux sous-classes",
+        "Abstract Factory — il garantit la cohérence de la famille",
+        "Builder — il permet d'appeler uniquement les étapes nécessaires"
+      ],
+      correct: 3,
+      expl: "<strong>Builder</strong> brille pour les objets configurables : builder.pain(\"complet\").viande(\"poulet\").sauce(\"mayo\").build(). On n'est pas obligé d'appeler toutes les étapes. Les Factory sont plutôt pour choisir quelle classe instancier, pas pour configurer finement un objet."
+    },
+    {
+      q: "Dans Abstract Factory, pourquoi dit-on que les produits d'une même FabriqueConcrete sont 'cohérents' ?",
+      opts: [
+        "Car ils sont tous de la même classe Java",
+        "Car ils sont créés dans le même thread",
+        "Car ils sont conçus pour fonctionner ensemble — IngredientsItaliens ne mélange jamais un ingrédient belge",
+        "Car ils partagent les mêmes méthodes publiques"
+      ],
+      correct: 2,
+      expl: "<strong>La cohérence</strong> est la garantie principale : si tu utilises IngredientsItaliens, tu obtiens PateFine + SauceTomate + Mozzarella — une famille italienne complète. Jamais une SauceCremeBeige belge avec une PateFine italienne. Chaque FabriqueConcrete garantit la cohérence interne."
+    },
+    {
+      q: "Dans Simple Factory, pourquoi le Client n'utilise-t-il pas directement 'new Margherita()' ?",
+      opts: [
+        "Car new est interdit avec le pattern Simple Factory",
+        "Pour respecter OCP — le Client ne doit pas connaître les classes concrètes",
+        "Pour centraliser la connaissance des types concrets dans la Fabrique — si Margherita est renommée, seule la Fabrique change",
+        "Car les constructeurs de Margherita sont privés"
+      ],
+      correct: 2,
+      expl: "<strong>Découplage</strong> : si on renomme Margherita en MargheritaClassique, ou si on veut changer l'implémentation, seule PizzeriaFactory est à modifier. Le Client reste inchangé car il ne connaît que l'interface Pizza. C'est le principe d'encapsulation de la création."
+    },
+    {
+      q: "Dans Factory Method, quel est le rôle de la méthode du Créateur abstrait qui appelle creerProduit() puis utilise le résultat ?",
+      opts: [
+        "Elle crée directement le produit sans déléguer aux sous-classes",
+        "Elle orchestre l'utilisation du produit — appelle creerProduit() sans savoir quelle classe concrète est retournée (Template Method)",
+        "Elle remplace le Directeur du pattern Builder",
+        "Elle valide que le produit créé est conforme à l'interface"
+      ],
+      correct: 1,
+      expl: "C'est le <strong>Template Method</strong> intégré au Factory Method : la classe abstraite Créateur définit une méthode concrète (ex: preparerCommande()) qui appelle creerProduit() en interne. Elle utilise le produit via son interface, sans jamais savoir si c'est une MargheritaCharleroi ou une MargheritaBruxelles."
+    },
+    {
+      q: "Dans Abstract Factory, que faut-il faire pour ajouter une nouvelle famille (ex: ingrédients espagnols) ?",
+      opts: [
+        "Créer IngredientsEspagnols implements IngredientsFactory — sans modifier l'interface ni les familles existantes",
+        "Modifier l'interface FabriqueAbstraite pour ajouter les méthodes espagnoles",
+        "Modifier toutes les FabriquesConcretes existantes",
+        "Ajouter des méthodes supplémentaires à l'interface Produit"
+      ],
+      correct: 0,
+      expl: "Ajouter une famille = <strong>une nouvelle FabriqueConcrete</strong>. Aucun code existant n'est touché — c'est OCP respecté pour l'axe des familles. On n'ajoute que IngredientsEspagnols implements IngredientsFactory."
+    },
+    {
+      q: "Quel pattern de création est le plus difficile à étendre quand on veut ajouter un nouveau TYPE de produit (pas une nouvelle famille) ?",
+      opts: [
+        "Simple Factory",
+        "Abstract Factory — il faut modifier l'interface + toutes les FabriquesConcretes existantes",
+        "Factory Method",
+        "Builder"
+      ],
+      correct: 1,
+      expl: "<strong>Abstract Factory</strong> souffre ici : ajouter creerDessert() à IngredientsFactory oblige à l'implémenter dans IngredientsItaliens ET IngredientsBelges ET IngredientsEspagnols... Facile d'ajouter des familles, difficile d'ajouter des types."
+    },
+    {
+      q: "Dans Builder, qui appelle getResultat() pour obtenir l'objet final ?",
+      opts: [
+        "Le Directeur, en interne après avoir orchestré toutes les étapes",
+        "L'interface Builder automatiquement",
+        "Le Client — après que le Directeur a construit, le Client appelle getResultat() sur le BuilderConcret",
+        "Le Produit lui-même lors de sa finalisation"
+      ],
+      correct: 2,
+      expl: "C'est le <strong>Client</strong> : il passe le BuilderConcret au Directeur, le Directeur orchestre les étapes, puis le Client récupère le Produit fini via builderConcret.getResultat(). Le Directeur ne retourne rien."
+    },
+    {
+      q: "Dans Factory Method, le Client instancie-t-il directement PizzeriaCharleroi ?",
+      opts: [
+        "Oui — c'est lui qui choisit le CréateurConcret. Mais il ne connaît pas MargheritaCharleroi (le Produit concret)",
+        "Non — le Client ne connaît aucune classe concrète",
+        "Non — c'est la classe abstraite Pizzeria qui instancie PizzeriaCharleroi",
+        "Oui, et il instancie aussi directement MargheritaCharleroi"
+      ],
+      correct: 0,
+      expl: "Le Client <strong>choisit le CréateurConcret</strong> (new PizzeriaCharleroi()) mais ne connaît jamais le ProduitConcret (MargheritaCharleroi). Le découplage est entre Client et Produit, pas entre Client et Créateur."
+    },
+    {
+      q: "Dans Abstract Factory, IngredientsItaliens et IngredientsBelges implémentent quelle interface ?",
+      opts: [
+        "ProduitAbstrait",
+        "L'interface FabriqueAbstraite (ex: IngredientsFactory)",
+        "FeuilleConcrete du pattern Composite",
+        "La classe abstraite Créateur du pattern Factory Method"
+      ],
+      correct: 1,
+      expl: "IngredientsItaliens et IngredientsBelges sont les <strong>FabriquesConcretes</strong> : elles implémentent IngredientsFactory et fournissent une implémentation cohérente pour creerPate, creerSauce, creerFromage."
+    },
+    {
+      q: "Dans Builder, si on veut créer deux burgers différents à la suite avec le même Directeur, que fait-on ?",
+      opts: [
+        "Créer deux Directeurs différents, un par type",
+        "Le Directeur reconstruit automatiquement",
+        "Appeler construire() deux fois avec des BuilderConcrets différents : construire(new BurgerPoulet()) puis construire(new BurgerBoeuf())",
+        "Le Directeur garde en mémoire le dernier objet et le duplique"
+      ],
+      correct: 2,
+      expl: "Le Directeur est <strong>réutilisable</strong> : construire(new BurgerPoulet()) → getResultat() → construire(new BurgerBoeuf()) → getResultat(). Même Directeur, BuilderConcrets différents, Produits différents."
+    },
+    {
+      q: "Dans Factory Method, qu'arrive-t-il si on ajoute une nouvelle Pizzeria (PizzeriaLyon) ?",
+      opts: [
+        "On modifie la classe abstraite Pizzeria pour ajouter un cas",
+        "On crée PizzeriaLyon extends Pizzeria et on implémente creerPizza() — aucun code existant n'est modifié",
+        "On modifie toutes les PizzeriaConcretes existantes",
+        "On ajoute un cas dans un switch central"
+      ],
+      correct: 1,
+      expl: "<strong>OCP respecté</strong> : créer une nouvelle Pizzeria = écrire une nouvelle classe. Zéro modification de Pizzeria abstraite ou des autres Pizzerias. Le code existant et testé reste intact."
+    },
+    {
+      q: "Dans Builder, le Produit final connaît-il le BuilderConcret qui l'a assemblé ?",
+      opts: [
+        "Oui — il stocke une référence au BuilderConcret",
+        "Oui — via l'interface Builder",
+        "Non — le Produit est juste un objet assemblé, il ne sait pas comment il a été créé",
+        "Oui, pour permettre sa reconstruction"
+      ],
+      correct: 2,
+      expl: "Le Produit (Burger) est <strong>indépendant de son processus de création</strong>. Un Burger contient des attributs (pain, viande, sauce) mais ne sait pas qu'il a été construit par BurgerPoulet via le Cuisinier."
+    },
+    {
+      q: "Dans Factory Method, creerProduit() dans le Créateur abstrait est-elle toujours abstraite ?",
+      opts: [
+        "Oui — elle doit toujours être abstraite pour forcer les sous-classes à l'implémenter",
+        "Non — elle peut avoir une implémentation par défaut que les sous-classes peuvent surcharger si elles veulent",
+        "Non — elle est toujours concrète",
+        "Oui, sinon ce n'est pas un Factory Method"
+      ],
+      correct: 1,
+      expl: "Elle peut être <strong>abstraite OU avoir une implémentation par défaut</strong>. Si abstraite, toutes les sous-classes DOIVENT l'implémenter. Avec une implémentation par défaut, les sous-classes peuvent l'utiliser telle quelle ou la surcharger. Les deux variantes sont valides."
+    },
+    {
+      q: "Dans Abstract Factory, si le Client change IngredientsItaliens pour IngredientsBelges, combien de lignes de code change-t-il ?",
+      opts: [
+        "Toutes les lignes qui créent des produits",
+        "L'ensemble du code métier",
+        "Seulement la ligne où la FabriqueConcrete est instanciée/injectée",
+        "Les méthodes creerPate(), creerSauce(), creerFromage() partout"
+      ],
+      correct: 2,
+      expl: "<strong>Une seule ligne</strong> : new IngredientsBelges() au lieu de new IngredientsItaliens(). Tout le reste du code appelle fab.creerPate() etc. via l'interface — il n'a aucune idée que la famille a changé."
+    },
+    {
+      q: "Quel est le nom des 4 participants du pattern Builder ?",
+      opts: [
+        "Créateur, CréateurConcret, Produit, Client",
+        "Fabrique, FabriqueConcrete, Produit, Client",
+        "Builder, BuilderConcret, Directeur, Produit",
+        "Strategy, Context, Produit, Directeur"
+      ],
+      correct: 2,
+      expl: "Les 4 participants : <strong>Builder</strong> (interface définissant les étapes), <strong>BuilderConcret</strong> (implémentation concrète), <strong>Directeur</strong> (orchestre l'ordre), <strong>Produit</strong> (l'objet complexe résultant). Ex: BurgerBuilder, BurgerPoulet, Cuisinier, Burger."
+    },
+    {
+      q: "Dans Simple Factory, créer une méthode statique creerPizza(String type) — quel inconvénient cela pose-t-il ?",
+      opts: [
+        "Les méthodes statiques sont interdites dans le Simple Factory",
+        "Les méthodes statiques ne peuvent pas retourner des interfaces",
+        "On ne peut pas injecter une fausse Fabrique pour les tests (méthode statique impossible à remplacer)",
+        "Les méthodes statiques violent automatiquement OCP"
+      ],
+      correct: 2,
+      expl: "Les méthodes <strong>statiques couplent fortement</strong> : on ne peut pas injecter une MockPizzeriaFactory pour les tests unitaires. L'instance injectée (non-statique) permet de passer une fausse implémentation en test."
+    },
+    {
+      q: "Dans Abstract Factory, le Client peut-il utiliser plusieurs FabriquesConcretes différentes en même temps ?",
+      opts: [
+        "Non — un Client ne peut utiliser qu'une seule FabriqueConcrete à la fois",
+        "Oui — un Client peut avoir IngredientsItaliens pour les entrées et IngredientsBelges pour les desserts si voulu",
+        "Non — cela violerait la cohérence des familles",
+        "Oui, mais seulement via l'interface FabriqueAbstraite"
+      ],
+      correct: 1,
+      expl: "Techniquement <strong>possible</strong> mais généralement contre l'intention du pattern : l'Abstract Factory garantit la cohérence d'une famille. Mélanger les familles peut casser la cohérence. Le pattern est conçu pour qu'un seul contexte = une seule famille cohérente."
+    },
+    {
+      q: "Dans Factory Method, quel participant instancie réellement le ProduitConcret ?",
+      opts: [
+        "Le Client qui appelle creerProduit()",
+        "La classe abstraite Créateur",
+        "Le CréateurConcret dans son implémentation de creerProduit()",
+        "L'interface Produit via une méthode statique"
+      ],
+      correct: 2,
+      expl: "<strong>Le CréateurConcret</strong> : PizzeriaCharleroi.creerPizza() contient new MargheritaCharleroi(). C'est la décision d'instanciation qui est déléguée aux sous-classes — c'est l'essence du pattern."
+    }
+  ],
+
+  structure: [
+    {
+      q: "Dans le pattern Composite, pourquoi le Composé contient-il une List<Composant> et non List<Feuille> ou List<Composé> ?",
+      opts: [
+        "Pour des raisons de performance — Composant est plus léger",
+        "Pour permettre au Composé de contenir à la fois des Feuilles ET d'autres Composés — c'est ce qui rend la structure récursive",
+        "Parce que Feuille et Composé ne sont pas des classes, ce sont des rôles",
+        "Pour forcer l'utilisation d'une interface commune"
+      ],
+      correct: 1,
+      expl: "C'est <strong>le cœur du pattern Composite</strong> : en stockant des <code>List&lt;Composant&gt;</code>, le Composé peut contenir aussi bien des feuilles que d'autres composés. Ça permet l'arborescence de profondeur arbitraire — une Box contient des Produits ET d'autres Box."
+    },
+    {
+      q: "Quelle est la différence clé entre le pattern Composite et le pattern Décorateur ?",
+      opts: [
+        "Le Composite est un pattern de comportement, le Décorateur un pattern de structure",
+        "Le Composite utilise l'héritage, le Décorateur utilise la composition",
+        "Le Composite traite uniformément des objets en arbre (1 nœud → N enfants), le Décorateur ajoute des responsabilités en chaîne (1 objet → 1 objet)",
+        "Le Décorateur gère des hiérarchies, le Composite gère des enveloppes"
+      ],
+      correct: 2,
+      expl: "Structure et but différents : <strong>Composite</strong> = arbre (1 → N enfants) pour traiter uniformément objets simples et composés. <strong>Décorateur</strong> = chaîne poupées russes (1 → 1) pour ajouter dynamiquement des responsabilités sans explosion de sous-classes."
+    },
+    {
+      q: "Dans le pattern Décorateur, pourquoi le Décorateur hérite-t-il du ComposantAbstrait ET contient-il une référence vers lui ?",
+      opts: [
+        "L'héritage est obligatoire en Java, la référence est optionnelle",
+        "Pour des raisons de performance uniquement",
+        "La référence sert à hériter des méthodes, l'héritage sert à déléguer",
+        "L'héritage garantit que le décorateur est interchangeable avec le composant. La référence permet d'envelopper et de déléguer à l'objet décoré"
+      ],
+      correct: 3,
+      expl: "La <strong>double relation</strong> est essentielle : <strong>héritage</strong> → le Décorateur peut remplacer n'importe quel Composant (même type, donc interchangeable). <strong>Référence</strong> → il appelle composant.operation() pour déléguer avant/après avoir ajouté son propre comportement."
+    },
+    {
+      q: "Quelle est la séquence correcte d'appels pour Café + Lait + Chantilly quand on appelle getCost() sur Chantilly ?",
+      opts: [
+        "Chantilly.getCost() → Lait.getCost() → Café.getCost() retourne 1€ → Lait retourne 1.20€ → Chantilly retourne 1.70€",
+        "Café retourne 1€, Lait retourne 0.20€, Chantilly retourne 0.50€, puis on additionne tout à la fin",
+        "ComposantAbstrait calcule la somme de tous les décorateurs en une seule fois",
+        "On descend jusqu'à Café, puis chaque décorateur retourne son prix seul"
+      ],
+      correct: 0,
+      expl: "La chaîne <strong>descend en appelant</strong> (chaque méthode attend le résultat du niveau inférieur), puis <strong>remonte en accumulant</strong>. Café retourne 1€, Lait reçoit 1€ et retourne 1.20€, Chantilly reçoit 1.20€ et retourne 1.70€."
+    },
+    {
+      q: "Dans Composite, quelle méthode le Client appelle-t-il sur la racine ?",
+      opts: [
+        "add(Composant) pour démarrer le calcul",
+        "La même méthode que sur une Feuille — ex: getPrice(). Le Client traite tout uniformément",
+        "getChildren() pour parcourir l'arbre",
+        "compute() qui est réservée au Composé"
+      ],
+      correct: 1,
+      expl: "Le Client appelle <strong>toujours la même méthode</strong> (getPrice(), operation()...) que ce soit sur une Feuille ou un Composé. C'est la transparence du Composite : le Client ne fait pas de if instanceof. La récursivité est gérée à l'intérieur du Composé."
+    },
+    {
+      q: "Dans Composite, qu'est-ce qui différencie concrètement Feuille et Composé ?",
+      opts: [
+        "La Feuille est une interface, le Composé est une classe abstraite",
+        "La Feuille a plus de méthodes publiques",
+        "La Feuille implémente l'opération directement (cas de base), le Composé délègue récursivement à ses enfants",
+        "Le Composé hérite de la Feuille"
+      ],
+      correct: 2,
+      expl: "<strong>Feuille</strong> : getPrice() retourne directement son prix (10€). <strong>Composé</strong> : getPrice() parcourt ses enfants, appelle getPrice() sur chacun, et somme les résultats. C'est la structure classique de la récursion : cas de base (feuille) et cas récursif (composé)."
+    },
+    {
+      q: "Box_A contient Produit_1(10€), Produit_2(20€) et Box_B qui contient Produit_3(15€). getPrice() sur Box_A retourne :",
+      opts: [
+        "45€ — 10 + 20 + récursion sur Box_B(15€) = 45€",
+        "30€ — seulement les Produits directs de Box_A, pas ceux dans Box_B",
+        "15€ — seulement le contenu de Box_B",
+        "0€ — Box_A délègue tout à Box_B sans additionner"
+      ],
+      correct: 0,
+      expl: "La récursion descend : Box_A appelle getPrice() sur ses 3 enfants. Produit_1 retourne 10€, Produit_2 retourne 20€, Box_B appelle getPrice() sur Produit_3 et retourne 15€. Box_A additionne : <strong>10 + 20 + 15 = 45€</strong>."
+    },
+    {
+      q: "new Chantilly(new Lait(new Café())) retourne-t-il le même getCost() que new Lait(new Chantilly(new Café())) ?",
+      opts: [
+        "Non, l'ordre détermine quelle décoration s'applique en premier et change le résultat",
+        "Oui, les deux retournent 1.70€ — l'addition est commutative ici",
+        "Impossible à dire sans connaître l'implémentation exacte",
+        "Non, le premier ordre cause une StackOverflowException"
+      ],
+      correct: 1,
+      expl: "Les deux donnent <strong>1.70€</strong>. Dans les deux cas : getCafe(1€) + getLait(0.20€) + getChantilly(0.50€) = 1.70€. L'ordre d'enveloppement peut influencer d'autres comportements (ex: affichage), mais pour une simple addition de coûts, c'est commutatif."
+    },
+    {
+      q: "Dans Composite, le Client sait-il s'il traite une Feuille ou un Composé ?",
+      opts: [
+        "Oui, il doit vérifier avec instanceof avant d'appeler les méthodes",
+        "Oui, le Composé expose des méthodes supplémentaires comme add()",
+        "Oui, il reçoit toujours un Composé à la racine",
+        "Non — c'est le but. Les deux partagent l'interface Composant, le Client appelle toujours la même méthode"
+      ],
+      correct: 3,
+      expl: "La <strong>transparence</strong> du Composite : le Client ne fait pas la distinction. Il appelle getPrice() sur un Item (interface), que ce soit un Produit (feuille) ou une Box (composé). La récursivité se gère en interne. Pas d'instanceof, pas de cast."
+    },
+    {
+      q: "Dans Décorateur, peut-on empiler un nombre arbitraire de décorateurs ?",
+      opts: [
+        "Oui — chaque Décorateur hérite du ComposantAbstrait, donc il peut être décoré par un autre Décorateur",
+        "Non, maximum 2 niveaux d'imbrication",
+        "Non, les Décorateurs ne peuvent décorer que des ComposantsConcrets",
+        "Oui, mais seulement si tous les Décorateurs sont du même type"
+      ],
+      correct: 0,
+      expl: "Oui, <strong>indéfiniment</strong> : new Vanille(new Chantilly(new Lait(new Café()))). Puisque chaque Décorateur hérite de ComposantAbstrait (même type), il peut être enveloppé par un autre Décorateur. C'est les poupées russes."
+    },
+    {
+      q: "Quel pattern résout l'explosion combinatoire de sous-classes pour enrichir un objet avec des options ?",
+      opts: [
+        "Composite",
+        "Décorateur — N options = N décorateurs combinables, pas 2^N sous-classes",
+        "Factory Method",
+        "Observer"
+      ],
+      correct: 1,
+      expl: "<strong>Décorateur</strong> : avec Lait, Chantilly, Vanille, Caramel → 4 décorateurs combinables à l'infini. Sans Décorateur, il faudrait CaféLait, CaféChantilly, CaféLaitChantilly, CaféVanille... = 2^4 = 16 sous-classes. Le Décorateur réduit 2^N à N."
+    },
+    {
+      q: "Dans DécorateurConcret, que fait généralement la méthode operation() ?",
+      opts: [
+        "return composant.operation() seulement, sans ajouter de comportement",
+        "Exécute son comportement sans jamais appeler composant.operation()",
+        "Crée un nouveau ComposantConcret",
+        "Ajoute son propre comportement (ex: +0.20€) ET appelle composant.getCost() pour déléguer à l'objet enveloppé"
+      ],
+      correct: 3,
+      expl: "Le <strong>DécorateurConcret</strong> fait les deux : d'abord délègue à l'objet enveloppé (composant.getCost()), puis ajoute sa contribution. Lait : return composant.getCost() + 0.20. C'est la séquence essentielle : déléguer + enrichir."
+    },
+    {
+      q: "Quel participant du Composite est le seul à posséder une List<Composant> ?",
+      opts: [
+        "La Feuille — elle peut évoluer en Composé",
+        "Le Client — il gère la structure globale",
+        "Le Composé — seul lui peut avoir des enfants",
+        "L'interface Composant — disponible pour tout le monde"
+      ],
+      correct: 2,
+      expl: "Seul le <strong>Composé</strong> (Box, Dossier...) a une List&lt;Composant&gt;. La Feuille n'a pas d'enfants par définition. L'interface Composant définit juste les opérations communes. C'est la différence structurelle fondamentale entre les deux."
+    },
+    {
+      q: "Dans Décorateur, si on veut retirer Lait de la chaîne Café+Lait+Chantilly, comment procède-t-on ?",
+      opts: [
+        "Appeler removeLait() sur l'objet Chantilly",
+        "Mettre null dans la référence #composant de Lait",
+        "C'est totalement impossible avec le pattern Décorateur",
+        "Recréer la chaîne sans Lait : new Chantilly(new Café()) — le Décorateur ne supporte pas la suppression dynamique"
+      ],
+      correct: 3,
+      expl: "Le <strong>Décorateur ne supporte pas la suppression</strong> dynamique d'un maillon intermédiaire. Pour retirer Lait, il faut reconstruire : new Chantilly(new Café()). C'est une limitation du pattern — il est optimisé pour l'ajout, pas la suppression."
+    },
+    {
+      q: "Quel pattern est plus adapté pour calculer le prix total d'une commande avec des sous-commandes imbriquées à profondeur variable ?",
+      opts: [
+        "Décorateur",
+        "Composite — la structure arborescente et la récursion correspondent exactement à ce besoin",
+        "Builder",
+        "Abstract Factory"
+      ],
+      correct: 1,
+      expl: "<strong>Composite</strong> : une commande peut contenir des articles ET des sous-commandes qui contiennent elles-mêmes des articles. La profondeur est arbitraire. Le Décorateur ne gère que la chaîne linéaire 1→1, pas l'arbre 1→N."
+    },
+    {
+      q: "Que signifie qu'un pattern est 'transparent' pour le Client, dans le contexte du Composite ?",
+      opts: [
+        "Le Client ne voit pas les prix calculés",
+        "Les objets Composant ont une couleur transparente par défaut",
+        "Le Client traite Feuilles et Composés de manière identique via la même interface",
+        "La structure arborescente est invisible et stockée en base de données"
+      ],
+      correct: 2,
+      expl: "<strong>Transparent</strong> = le Client n'a pas besoin de savoir s'il parle à une Feuille ou un Composé. Il appelle toujours la même méthode (ex: getPrice()) sur l'interface Composant. La complexité de la récursion est cachée dans l'implémentation du Composé."
+    },
+    {
+      q: "Quel est l'avantage principal du Décorateur par rapport à l'héritage pour enrichir un objet ?",
+      opts: [
+        "Flexibilité à l'exécution — combinaison dynamique de décorateurs sans explosion de sous-classes",
+        "Le Décorateur est systématiquement plus rapide à l'exécution",
+        "Le Décorateur permet l'héritage multiple en Java",
+        "Le Décorateur est plus simple à lire dans le code"
+      ],
+      correct: 0,
+      expl: "L'héritage est <strong>statique</strong> : il faut créer CaféLaitChantilly avant la compilation. Le Décorateur est <strong>dynamique</strong> : new Chantilly(new Lait(cafeBase)) se compose à l'exécution selon les besoins de l'utilisateur. Aucune classe supplémentaire à créer."
+    },
+    {
+      q: "Dans le pattern Composite, si on appelle operation() sur une Feuille, que se passe-t-il ?",
+      opts: [
+        "Erreur — une Feuille ne peut pas exécuter operation() car elle n'a pas d'enfants",
+        "L'appel est automatiquement délégué à l'interface Composant",
+        "L'opération s'exécute directement sans récursion — c'est le cas de base",
+        "La méthode remonte dans la hiérarchie vers le Composé parent"
+      ],
+      correct: 2,
+      expl: "La Feuille est le <strong>cas de base</strong> de la récursion : elle implémente operation() directement (return prix, return valeur...) sans déléguer à des enfants, car elle n'en a pas. C'est la terminaison de la récursion."
+    },
+    {
+      q: "Un Décorateur peut-il décorer un autre Décorateur (pas juste un ComposantConcret) ?",
+      opts: [
+        "Oui — puisque le Décorateur hérite de ComposantAbstrait, il peut être enveloppé par un autre Décorateur",
+        "Non — un Décorateur ne peut décorer que des ComposantsConcrets directement",
+        "Seulement si les deux Décorateurs implémentent une interface supplémentaire",
+        "Non — cela créerait une référence circulaire"
+      ],
+      correct: 0,
+      expl: "Oui — c'est <strong>le génie du pattern</strong> : le Décorateur hérite de ComposantAbstrait, donc il EST un ComposantAbstrait. Un autre Décorateur peut donc l'envelopper. Chantilly enveloppe Lait qui enveloppe Café — trois niveaux d'imbrication."
+    },
+    {
+      q: "Dans l'exemple Amazon, si Box_B ne contient aucun produit, getPrice() sur Box_A(P1(10€) + Box_B()) retourne :",
+      opts: [
+        "Erreur NullPointerException",
+        "10€ — Box_B vide retourne 0€, Box_A somme 10 + 0 = 10€",
+        "0€ — la présence de Box_B vide annule tout",
+        "10€ seulement si Box_B est null, sinon 0€"
+      ],
+      correct: 1,
+      expl: "Box_B vide parcourt sa liste d'enfants vide et retourne <strong>0€</strong>. Box_A somme Produit_1(10€) + Box_B(0€) = <strong>10€</strong>. Le pattern gère naturellement les composés vides — pas d'erreur, juste 0 comme contribution."
+    },
+    {
+      q: "Dans Composite, Box_A contient Box_B(Produit_1(5€)) et Produit_2(10€). Quel est le résultat de getPrice() sur Box_A ?",
+      opts: [
+        "10€ — seulement Produit_2, Box_B est ignorée",
+        "15€ — Box_A appelle getPrice() sur Box_B(5€) et Produit_2(10€), somme 5+10",
+        "5€ — seulement Box_B",
+        "0€ — Box_A délègue tout à Box_B"
+      ],
+      correct: 1,
+      expl: "Box_A itère ses enfants : Box_B.getPrice() → Produit_1.getPrice() retourne 5€, Box_B retourne 5€. Produit_2.getPrice() retourne 10€. Box_A somme : <strong>5 + 10 = 15€</strong>."
+    },
+    {
+      q: "Dans Décorateur, la référence #composant est-elle généralement publique, privée ou protégée ?",
+      opts: [
+        "Toujours publique pour être accessible aux sous-classes",
+        "Protected — accessible aux DécorateursConcrets mais pas au Client extérieur",
+        "Privée — exposée via un getter public",
+        "Statique et partagée entre toutes les instances"
+      ],
+      correct: 1,
+      expl: "<strong>Protected</strong> est le choix habituel : <code>protected Boisson composant</code> dans CondimentDecorateur. Les DécorateursConcrets (Lait, Chantilly) héritent et peuvent appeler composant.getCost(). Le Client ne l'utilise pas directement."
+    },
+    {
+      q: "Quel est le résultat de new Lait(new Café()).getCost() si Café retourne 1€ et Lait ajoute 0.20€ ?",
+      opts: [
+        "0.20€ — seulement le prix de Lait",
+        "1€ — seulement le prix de Café",
+        "1.20€ — Lait délègue à Café (1€) et ajoute sa contribution (0.20€)",
+        "2.20€ — les deux prix sont additionnés deux fois"
+      ],
+      correct: 2,
+      expl: "<strong>1.20€</strong> : Lait.getCost() appelle composant.getCost() (Café retourne 1€) puis ajoute 0.20. return composant.getCost() + 0.20 = <strong>1.20€</strong>."
+    },
+    {
+      q: "Dans Composite, pourquoi met-on généralement add(Composant) sur le Composé et non sur l'interface Composant ?",
+      opts: [
+        "Les Feuilles ne devraient pas avoir de méthode add() — les forcer via l'interface serait trompeur ou inutile",
+        "Pour des raisons de performance Java",
+        "Car add() n'est pas une opération standard",
+        "Car l'interface Composant ne peut pas avoir de méthodes avec paramètres"
+      ],
+      correct: 0,
+      expl: "Choix de <strong>sécurité vs transparence</strong>. Si add() est dans l'interface, les Feuilles seraient forcées de l'implémenter (levant souvent une exception). En la mettant sur le Composé seulement, le compilateur empêche add() sur une Feuille."
+    },
+    {
+      q: "Dans Décorateur, que se passe-t-il si on oublie d'appeler composant.operation() dans le DécorateurConcret ?",
+      opts: [
+        "Le programme plante avec une NullPointerException",
+        "La chaîne continue normalement",
+        "Le comportement de l'objet enveloppé est perdu — seul le comportement du Décorateur s'exécute",
+        "ComposantAbstrait est appelé comme fallback"
+      ],
+      correct: 2,
+      expl: "Si Lait oublie d'appeler composant.getCost(), <strong>le Café n'est jamais calculé</strong>. Lait retournerait 0.20€ au lieu de 1.20€. La délégation est obligatoire — sans elle, la chaîne est rompue."
+    },
+    {
+      q: "Dans Composite, le Composé lui-même implémente-t-il l'interface Composant ?",
+      opts: [
+        "Oui — Box implémente Item, ce qui permet de l'imbriquer dans d'autres Box",
+        "Non — le Composé a un type distinct pour éviter la confusion",
+        "Non — seules les Feuilles implémentent Composant",
+        "Oui, mais seulement si le Composé ne contient que des Feuilles"
+      ],
+      correct: 0,
+      expl: "Oui — c'est <strong>l'essence du Composite</strong> : Box implémente Item. Cela permet à une Box de contenir d'autres Box. Sans ça, l'imbrication récursive serait impossible."
+    },
+    {
+      q: "Dans Décorateur, comment appelle-t-on le mécanisme où chaque objet passe l'appel à l'objet qu'il contient ?",
+      opts: [
+        "Héritage en cascade",
+        "Polymorphisme multiple",
+        "Surcharge de méthode",
+        "Délégation (forwarding) — chaque Décorateur appelle composant.operation() pour passer la main à l'objet suivant"
+      ],
+      correct: 3,
+      expl: "<strong>Délégation</strong> : Lait.getCost() dit 'laisse Café calculer son prix, je rajoute juste ma contribution'. Différent de super — on appelle via une référence à un objet externe."
+    },
+    {
+      q: "Dans Composite, peut-on avoir une profondeur arbitraire d'imbrication ?",
+      opts: [
+        "Oui — Box peut contenir Box qui contient Box... La récursion s'arrête aux Feuilles",
+        "Non — maximum 3 niveaux de profondeur",
+        "Non — le pattern ne supporte que 2 niveaux",
+        "Oui, mais seulement si tous les Composants sont du même type"
+      ],
+      correct: 0,
+      expl: "Oui, <strong>profondeur arbitraire</strong> : une commande peut avoir des boîtes dans des boîtes. getPrice() sur la racine calcule tout grâce à la récursion. La profondeur n'est limitée que par la mémoire disponible."
+    },
+    {
+      q: "Dans Décorateur, est-il sécuritaire de passer null comme composant au constructeur ?",
+      opts: [
+        "Oui, c'est un cas valide prévu par le pattern",
+        "Oui, cela retourne automatiquement 0",
+        "Oui, si le Décorateur vérifie null en interne",
+        "Non — composant.operation() causerait une NullPointerException"
+      ],
+      correct: 3,
+      expl: "En pratique, <strong>null est invalide</strong> : Lait.getCost() appelle composant.getCost() → NullPointerException si composant est null. Le constructeur devrait valider composant != null pour échouer tôt."
+    },
+    {
+      q: "Dans Composite, une Box vide (sans enfants) que retourne getPrice() ?",
+      opts: [
+        "Une exception — une Box vide est invalide",
+        "0 — elle parcourt une liste vide, la somme reste 0",
+        "null — aucune valeur calculable",
+        "Le prix par défaut de l'interface"
+      ],
+      correct: 1,
+      expl: "<strong>0</strong> : la boucle sur la liste vide ne s'exécute pas, la somme reste 0. Box_A(Produit_1(10€) + BoxVide()) = 10 + 0 = 10€. Comportement naturel et correct."
+    },
+    {
+      q: "Dans Décorateur, pourquoi préfère-t-on la composition à l'héritage pour ajouter des comportements ?",
+      opts: [
+        "L'héritage est statique (défini à la compilation). La composition est dynamique (composée à l'exécution)",
+        "L'héritage est plus lent",
+        "L'héritage permet l'héritage multiple en Java",
+        "La composition est plus lisible"
+      ],
+      correct: 0,
+      expl: "<strong>Dynamisme</strong> : avec l'héritage, CaféLaitChantilly doit exister avant la compilation. Avec le Décorateur, new Chantilly(new Lait(new Café())) se compose à l'exécution selon la commande du client. On évite l'explosion de sous-classes."
+    },
+    {
+      q: "Dans Composite, si on retire une Box de l'arbre, ses enfants disparaissent-ils du calcul ?",
+      opts: [
+        "Oui — retirer un nœud retire tout son sous-arbre du point de vue du parent",
+        "Non — les enfants restent liés directement au parent du nœud retiré",
+        "Non — il faut retirer chaque enfant manuellement d'abord",
+        "Oui, mais seulement les Feuilles directes"
+      ],
+      correct: 0,
+      expl: "Oui — quand on retire Box_B de Box_A, tout le sous-arbre de Box_B disparaît du calcul. Les objets Java continuent d'exister en mémoire si d'autres références les pointent, mais ne font plus partie de la hiérarchie."
+    },
+    {
+      q: "Dans Décorateur new Vanille(new Chantilly(new Lait(new Café()))), combien d'appels à getCost() s'enchaînent ?",
+      opts: [
+        "1 appel — Vanille calcule tout directement",
+        "2 appels — Vanille et Café seulement",
+        "4 appels — Vanille appelle Chantilly, Chantilly appelle Lait, Lait appelle Café",
+        "3 appels — seulement les Décorateurs, pas Café"
+      ],
+      correct: 2,
+      expl: "<strong>4 appels</strong> : Vanille → Chantilly → Lait → Café. Café retourne 1€. Lait retourne 1.20€. Chantilly retourne 1.70€. Vanille retourne 1.70 + son prix. Chaque maillon de la chaîne s'exécute."
+    },
+    {
+      q: "Quel avantage le Composite offre-t-il par rapport à une List plate pour une hiérarchie imbriquée ?",
+      opts: [
+        "La List est moins performante",
+        "La List supporte l'héritage, pas le Composite",
+        "Il n'y a pas vraiment d'avantage",
+        "Le Composite encapsule la récursion — getPrice() sur la racine calcule TOUT automatiquement dans tous les niveaux"
+      ],
+      correct: 3,
+      expl: "Avec une List plate, il faudrait coder la récursion à chaque appel. <strong>Le Composite encapsule la récursion</strong> : getPrice() sur Box_A sait automatiquement descendre dans tous les sous-arbres. Transparence totale pour le Client."
+    },
+    {
+      q: "Peut-on combiner Composite et Décorateur dans la même application ?",
+      opts: [
+        "Oui — ex: arbre de fichiers (Composite) où chaque fichier peut être décoré avec des permissions (Décorateur)",
+        "Non — les deux patterns utilisent la même interface et entrent en conflit",
+        "Non — Composite est statique, Décorateur dynamique",
+        "Oui, mais seulement s'ils partagent exactement la même interface"
+      ],
+      correct: 0,
+      expl: "Oui, ils sont <strong>complémentaires</strong> : Composite pour représenter la hiérarchie (Dossier/Fichier), Décorateur pour enrichir dynamiquement les éléments (fichier chiffré, compressé, avec droits restreints...). Chaque pattern joue son rôle indépendamment."
+    }
+  ],
+
+  comportement: [
+    {
+      q: "Dans le pattern Strategy, quel est le rôle exact du Context ?",
+      opts: [
+        "Le Context choisit quelle Strategy utiliser selon la situation",
+        "Le Context est l'interface entre le client et l'algorithme — il stocke la Strategy et délègue l'exécution sans choisir lui-même",
+        "Le Context implémente l'algorithme principal et appelle les Strategies pour des sous-tâches",
+        "Le Context est le client qui choisit la Strategy"
+      ],
+      correct: 1,
+      expl: "Le Context <strong>ne choisit pas</strong> la Strategy — c'est le Client qui choisit et injecte via setStrategy(). Le Context se contente de stocker la référence et de déléguer via strategy.execute(). Séparation des responsabilités : le client choisit, le Context exécute."
+    },
+    {
+      q: "Quel est l'avantage du pattern Strategy par rapport à une série de if/else pour choisir un algorithme ?",
+      opts: [
+        "Le Strategy est plus rapide à l'exécution",
+        "Le Strategy utilise moins de mémoire",
+        "Ajouter un nouvel algorithme = créer une nouvelle classe sans modifier le code existant (Open/Closed)",
+        "Le Strategy permet d'avoir plusieurs algorithmes actifs simultanément"
+      ],
+      correct: 2,
+      expl: "Avec if/else, ajouter PayPal → modifier la classe Context. Avec Strategy, ajouter PayPal → créer <code>PayPalStrategy implements PaiementStrategy</code> sans toucher au Context. C'est le principe <strong>Open/Closed</strong> : ouvert à l'extension, fermé à la modification."
+    },
+    {
+      q: "Dans le pattern Observer mode Push, que contient l'appel à actualise() ?",
+      opts: [
+        "Rien — actualise() est toujours vide, même en mode Push",
+        "Une référence vers le Sujet pour que l'Observateur aille chercher les données",
+        "L'ID de l'observateur à notifier",
+        "Les données directement — le Sujet envoie l'information dans l'appel : actualise(données)"
+      ],
+      correct: 3,
+      expl: "C'est <strong>la distinction fondamentale Push/Pull</strong> : en <strong>Push</strong>, le Sujet envoie les données dans l'appel actualise(données). En <strong>Pull</strong>, actualise() est vide — c'est un signal, et l'Observateur va chercher lui-même via sujet.getEtat()."
+    },
+    {
+      q: "Pourquoi ObservateurConcret a-t-il besoin d'une référence vers SujetConcret en mode Pull, mais pas en mode Push ?",
+      opts: [
+        "En mode Push, le Sujet connaît directement chaque Observateur et n'a pas besoin de référence",
+        "En mode Pull, l'Observateur doit appeler getEtat() sur le Sujet — il a donc besoin de le connaître. En Push, les données arrivent directement dans actualise()",
+        "La référence est toujours présente dans les deux modes",
+        "En mode Pull, l'Observateur doit s'abonner lui-même au Sujet"
+      ],
+      correct: 1,
+      expl: "En <strong>Pull</strong> : notifie() → actualise() vide → <code>sujet.getEtat()</code>. Pour appeler getEtat(), JeanMichel doit avoir une référence vers Orageux. En <strong>Push</strong> : les données arrivent dans actualise(données) — JeanMichel n'a pas besoin de connaître Orageux."
+    },
+    {
+      q: "Quel est l'avantage du mode Pull sur le mode Push dans Observer ?",
+      opts: [
+        "L'Observateur prend uniquement les données dont il a besoin — pas de données inutiles envoyées",
+        "Le mode Pull est plus simple à implémenter",
+        "Le mode Pull réduit le couplage entre Sujet et Observateur",
+        "Le mode Pull est systématiquement plus rapide"
+      ],
+      correct: 0,
+      expl: "En Push, le Sujet envoie toutes ses données — certains observateurs peuvent recevoir des informations inutiles. En <strong>Pull, chaque observateur choisit</strong> exactement ce dont il a besoin via getEtat(). L'inconvénient : le couplage est plus fort car ObservateurConcret doit connaître SujetConcret."
+    },
+    {
+      q: "Quelle est la différence entre le pattern Strategy et le pattern Observer ?",
+      opts: [
+        "Strategy est un pattern de création, Observer est un pattern de comportement",
+        "Observer utilise des interfaces, Strategy non",
+        "Strategy choisit comment exécuter une tâche (algorithme interchangeable). Observer définit une relation 1-à-N pour notifier automatiquement lors d'un changement d'état",
+        "Ils sont identiques, juste avec des noms différents"
+      ],
+      correct: 2,
+      expl: "<strong>Strategy</strong> = choisir comment faire quelque chose (algorithme interchangeable, relation 1-à-1 Context-Strategy). <strong>Observer</strong> = réagir automatiquement à un événement (relation 1-à-N Sujet-Observateurs). Strategy est proactif, Observer est réactif."
+    },
+    {
+      q: "Dans Observer, qui gère la liste des observateurs (abonnement/désabonnement) ?",
+      opts: [
+        "Le Sujet — il possède ajouter(), retirer(), notifie()",
+        "Les Observateurs eux-mêmes",
+        "Une classe Registry externe",
+        "Le Client qui crée les objets"
+      ],
+      correct: 0,
+      expl: "Le <strong>Sujet</strong> (classe abstraite ou concrète) gère la liste : <code>ajouter(obs)</code> pour s'abonner, <code>retirer(obs)</code> pour se désabonner, <code>notifie()</code> pour parcourir et notifier tous les observateurs enregistrés."
+    },
+    {
+      q: "Peut-on changer de Strategy en cours d'exécution dans le pattern Strategy ?",
+      opts: [
+        "Oui — via setStrategy(nouvelleSrategy), le Context peut changer d'algorithme dynamiquement",
+        "Non — la Strategy est fixée à la création du Context",
+        "Oui, mais seulement si les Strategies héritent de la même classe abstraite",
+        "Non — changer de Strategy violerait le principe Single Responsibility"
+      ],
+      correct: 0,
+      expl: "Oui — c'est <strong>un avantage clé</strong> du pattern Strategy. Un SystemePaiement peut utiliser Visa pendant une session, puis passer à Bancontact si l'utilisateur change son mode de paiement via setStrategy(new Bancontact()). Flexibilité maximale à l'exécution."
+    },
+    {
+      q: "Dans Observer, que fait exactement la méthode notifie() du Sujet ?",
+      opts: [
+        "Envoie les données à tous les observateurs en un seul appel groupé",
+        "Attend que tous les observateurs aient répondu avant de continuer",
+        "Parcourt la liste des observateurs et appelle actualise() sur chacun d'eux",
+        "Sélectionne l'observateur le plus adapté et l'appelle seul"
+      ],
+      correct: 2,
+      expl: "notifie() fait une <strong>boucle</strong> : <code>for (Observateur obs : liste) { obs.actualise(...); }</code>. Elle appelle actualise() sur chaque observateur abonné. En Push, elle passe les données; en Pull, elle appelle actualise() sans paramètre."
+    },
+    {
+      q: "Dans Strategy, si on veut ajouter le paiement Mastercard à un système existant, que fait-on ?",
+      opts: [
+        "Modifier la méthode payer() du Context pour ajouter un nouveau cas if/else",
+        "Créer MastercardStrategy implements PaiementStrategy — sans modifier le code existant",
+        "Modifier l'interface PaiementStrategy pour ajouter une méthode mastercard()",
+        "Créer une sous-classe de SystemePaiement"
+      ],
+      correct: 1,
+      expl: "<strong>Open/Closed en action</strong> : on crée <code>class MastercardStrategy implements PaiementStrategy { public void payer(double montant) {...} }</code>. Zero modification du Context, zero modification des Strategies existantes. Juste une nouvelle classe."
+    },
+    {
+      q: "En Observer Push, qui décide quelles données envoyer dans actualise() ?",
+      opts: [
+        "JeanMichel (l'Observateur) qui a spécifié ses préférences à l'abonnement",
+        "L'interface Observateur qui définit le format",
+        "Le SujetConcret (Orageux) lors de l'appel notifie() — c'est lui qui choisit quoi envoyer",
+        "Le Client qui a créé Orageux"
+      ],
+      correct: 2,
+      expl: "En Push, c'est le <strong>SujetConcret</strong> qui contrôle : notifie() appelle obs.actualise(\"forte pluie dans 20min\"). C'est Orageux qui choisit le format et le contenu. L'Observateur reçoit ce que le Sujet décide d'envoyer — sans contrôle sur la granularité des données."
+    },
+    {
+      q: "Quel est l'inconvénient du mode Pull par rapport au Push dans Observer ?",
+      opts: [
+        "Le Pull est beaucoup plus lent",
+        "Le Pull envoie trop de données",
+        "Le Pull n'est pas compatible avec les interfaces Java",
+        "Couplage plus fort — ObservateurConcret doit connaître SujetConcret pour appeler getEtat()"
+      ],
+      correct: 3,
+      expl: "En <strong>Pull</strong>, JeanMichel doit avoir une référence directe vers Orageux (SujetConcret) pour appeler orageux.getEtat(). Il connaît une classe concrète, pas juste l'interface Sujet. C'est un <strong>couplage plus fort</strong> — si Orageux change, JeanMichel peut être impacté."
+    },
+    {
+      q: "Dans Strategy, le Context sait-il quelle implémentation concrète s'exécute quand il appelle strategy.payer() ?",
+      opts: [
+        "Oui, il vérifie le type avec instanceof avant l'appel",
+        "Non — il appelle via l'interface, sans savoir si c'est Visa, Bancontact ou PayPal",
+        "Oui, il l'a stocké lors du setStrategy() et peut retrouver le type",
+        "Non, et c'est un problème pour le débogage"
+      ],
+      correct: 1,
+      expl: "Non — c'est <strong>le polymorphisme au cœur du pattern</strong>. Le Context stocke une référence de type PaiementStrategy (interface). Quand il appelle strategy.payer(50€), il ne sait pas si c'est Visa ou Bancontact. La bonne implémentation s'exécute automatiquement."
+    },
+    {
+      q: "Dans Observer, quel est le type de la liste que le Sujet utilise pour stocker ses observateurs ?",
+      opts: [
+        "List<ObservateurConcret> — il stocke les types concrets pour pouvoir appeler leurs méthodes spécifiques",
+        "List<Object> — pour être le plus générique possible",
+        "List<Observateur> (interface) — il appelle actualise() de façon polymorphe sans connaître les types concrets",
+        "Map<String, Observateur> — pour retrouver les observateurs par nom"
+      ],
+      correct: 2,
+      expl: "<strong>List&lt;Observateur&gt;</strong> (interface) : le Sujet ne connaît que l'interface. Il appelle obs.actualise() sur chaque élément — le polymorphisme fait que JeanMichel.actualise() ou MarieJosee.actualise() s'exécute correctement. Couplage minimal."
+    },
+    {
+      q: "Quel pattern est dit 'réactif' car déclenché par un événement externe, par opposition à 'proactif' ?",
+      opts: [
+        "Strategy — le Client choisit activement l'algorithme",
+        "Observer — les Observateurs réagissent automatiquement à un changement d'état du Sujet",
+        "Builder — la construction suit un plan prédéfini",
+        "Factory Method — la création est déclenchée par le Client"
+      ],
+      correct: 1,
+      expl: "<strong>Observer est réactif</strong> : JeanMichel ne fait rien jusqu'à ce qu'Orageux le notifie. Le déclencheur est externe (changement d'état du Sujet). Strategy est proactif : le Client choisit délibérément de setStrategy(Visa) puis payer()."
+    },
+    {
+      q: "En Observer Push, si 4 observateurs sont abonnés et notifie() est appelée une fois, combien d'appels à actualise() sont effectués ?",
+      opts: [
+        "1 appel — notifie() groupe tout dans un seul message",
+        "4 appels — un par observateur abonné",
+        "Dépend du contenu du message Push",
+        "0 si aucun observateur n'a de données à traiter"
+      ],
+      correct: 1,
+      expl: "notifie() fait une boucle : <strong>4 appels</strong>, un par observateur. for (Observateur o : liste) { o.actualise(données); } — chaque observateur reçoit sa propre notification. Ils sont traités séquentiellement dans l'implémentation standard."
+    },
+    {
+      q: "Quelle relation numérique caractérise le pattern Observer (nombre de Sujets vs Observateurs) ?",
+      opts: [
+        "1 Observateur pour 1 Sujet",
+        "N Sujets pour 1 Observateur",
+        "1 Sujet pour N Observateurs",
+        "N Sujets pour N Observateurs"
+      ],
+      correct: 2,
+      expl: "<strong>1 Sujet → N Observateurs</strong> : un seul objet Orageux peut notifier JeanMichel, MarieJosee, le ServiceMétéoApp, etc. C'est la relation 1-à-plusieurs qui définit le pattern. Le Sujet est le point central de diffusion."
+    },
+    {
+      q: "Dans Strategy, le Client peut-il changer la Strategy sans recréer le Context ?",
+      opts: [
+        "Oui — setStrategy(nouveauAlgo) change l'algorithme sans recréer SystemePaiement",
+        "Non — changer de Strategy nécessite de recréer tout le Context",
+        "Oui, mais seulement entre deux appels à execute()",
+        "Non — ça violerait le principe Open/Closed"
+      ],
+      correct: 0,
+      expl: "Oui — <code>systeme.setStrategy(new Bancontact())</code> modifie juste la référence interne. Le Context (SystemePaiement) reste intact. C'est l'un des avantages : <strong>changer d'algorithme à chaud</strong> sans détruire l'état du Context."
+    },
+    {
+      q: "Dans Observer, les Observateurs peuvent-ils se désabonner du Sujet ?",
+      opts: [
+        "Oui — le Sujet expose une méthode retirer(obs) pour se retirer de la liste",
+        "Non — une fois abonné, l'Observateur reçoit toujours les notifications",
+        "Seulement si l'Observateur hérite du Sujet",
+        "Non — le désabonnement est géré automatiquement par le Garbage Collector"
+      ],
+      correct: 0,
+      expl: "Oui — le Sujet expose <code>retirer(obs)</code> ou <code>unsubscribe(obs)</code>. JeanMichel peut décider de ne plus être notifié des alertes météo. Le pattern Observer gère l'abonnement <strong>ET le désabonnement</strong> dynamiquement."
+    },
+    {
+      q: "Strategy et Observer utilisent tous les deux des interfaces. Quelle est leur différence structurelle principale ?",
+      opts: [
+        "Strategy utilise des classes abstraites, Observer utilise des interfaces",
+        "Strategy a un seul algorithme actif, Observer peut en avoir plusieurs",
+        "Strategy = 1 Context référence 1 Strategy. Observer = 1 Sujet référence N Observateurs dans une liste",
+        "Observer est synchrone, Strategy est asynchrone"
+      ],
+      correct: 2,
+      expl: "<strong>Structurellement</strong> : Context stocke <code>Strategy strategy</code> (une seule référence). Sujet stocke <code>List&lt;Observateur&gt; observateurs</code> (une liste). Strategy = 1-à-1. Observer = 1-à-N. C'est la différence architecturale fondamentale."
+    },
+    {
+      q: "Dans Strategy, si on a 5 algorithmes de tri, combien de classes ConcreteStrategy faut-il créer ?",
+      opts: [
+        "1 classe avec 5 méthodes différentes",
+        "5 classes — une par algorithme de tri (BubbleSortStrategy, QuickSortStrategy...)",
+        "1 classe avec un paramètre de type",
+        "Autant que de Contexts différents"
+      ],
+      correct: 1,
+      expl: "<strong>5 classes</strong> : BubbleSortStrategy, QuickSortStrategy, MergeSortStrategy... — chacune implements SortStrategy. Chaque algorithme est encapsulé dans sa propre classe. Pas de if/else, pas de switch."
+    },
+    {
+      q: "Dans Observer Pull, si Orageux a changé plusieurs fois depuis la dernière notification, que reçoit JeanMichel quand il appelle getEtat() ?",
+      opts: [
+        "L'état ACTUEL — le dernier état. Les états intermédiaires sont perdus",
+        "L'historique complet de tous les changements",
+        "L'état au moment précis où notifie() a été appelée",
+        "Une exception car l'état a changé trop souvent"
+      ],
+      correct: 0,
+      expl: "getEtat() retourne l'<strong>état courant</strong> au moment de l'appel. Les états intermédiaires ne sont pas stockés par défaut. Si Orageux est passé de 'soleil' à 'nuageux' à 'pluie', JeanMichel ne voit que 'pluie'."
+    },
+    {
+      q: "Dans Strategy, le Context peut-il avoir une Strategy par défaut initialisée dans son constructeur ?",
+      opts: [
+        "Oui — le Context peut initialiser #strategy avec une ConcreteStrategy par défaut",
+        "Non — une Strategy doit toujours être injectée explicitement",
+        "Oui, mais seulement via une classe abstraite",
+        "Non — cela violerait DIP"
+      ],
+      correct: 0,
+      expl: "Oui — <code>this.strategy = new BancontactStrategy()</code> dans le constructeur est valide. Le Client peut ensuite la changer avec setStrategy(). Une Strategy par défaut améliore l'ergonomie sans sacrifier la flexibilité."
+    },
+    {
+      q: "Dans Observer, un même objet peut-il être à la fois Sujet ET Observateur ?",
+      opts: [
+        "Oui — un objet peut implémenter les deux interfaces et participer aux deux rôles",
+        "Non — les rôles sont mutuellement exclusifs",
+        "Oui, mais seulement s'il hérite d'une classe commune",
+        "Non — cela créerait une boucle infinie"
+      ],
+      correct: 0,
+      expl: "Oui — courant dans les architectures événementielles : ServiceMétéo observe CapteurTemperature (Observateur) et notifie AppMobile (Sujet). <strong>Les chaînes de notification</strong> sont possibles tant qu'il n'y a pas de cycle."
+    },
+    {
+      q: "Dans Observer Push, les données envoyées dans actualise() peuvent-elles être d'un type quelconque ?",
+      opts: [
+        "Oui — le type est défini dans l'interface Observateur (actualise(String), actualise(MeteoData)...)",
+        "Non — ce doit toujours être une String",
+        "Non — ce doit être un objet du type du Sujet",
+        "Non — ce doit être un type primitif Java"
+      ],
+      correct: 0,
+      expl: "Le type est <strong>défini par le contrat de l'interface</strong> Observateur. Les génériques Java permettent même <code>Observateur&lt;T&gt;</code> pour une interface typée et réutilisable."
+    },
+    {
+      q: "Dans Strategy, si on utilise toujours la même ConcreteStrategy, le pattern apporte-t-il encore de la valeur ?",
+      opts: [
+        "Non — sans changement, un appel direct vaut mieux",
+        "Oui — OCP, testabilité (injection d'un mock), et flexibilité future sont préservés",
+        "Non — c'est de l'over-engineering dans ce cas",
+        "Oui, mais il faudrait Abstract Factory à la place"
+      ],
+      correct: 1,
+      expl: "<strong>OCP et testabilité</strong> : même avec une seule Strategy active, le pattern permet d'injecter un MockStrategy pour les tests, d'ajouter PayPal demain sans toucher au Context."
+    },
+    {
+      q: "Dans Strategy, si la signature de la méthode change (payer(double) → payer(double, String devise)), que faut-il modifier ?",
+      opts: [
+        "Seulement le Context",
+        "Seulement les ConcreteStrategies à modifier",
+        "L'interface Strategy ET toutes les ConcreteStrategies",
+        "Rien — le polymorphisme gère les différences de signature"
+      ],
+      correct: 2,
+      expl: "Changer l'interface = <strong>casser tout le contrat</strong> : PaiementStrategy, Visa, Bancontact, PayPal... tous doivent être modifiés. Le pattern est robuste aux ajouts de Strategies, pas aux changements de contrat d'interface."
+    },
+    {
+      q: "Dans Observer, plusieurs Sujets différents peuvent-ils notifier le même Observateur ?",
+      opts: [
+        "Oui — un Observateur peut s'abonner à plusieurs Sujets simultanément",
+        "Non — un Observateur est toujours lié à un seul Sujet",
+        "Oui, mais seulement en mode Pull",
+        "Non — chaque Observateur doit avoir sa propre interface par Sujet"
+      ],
+      correct: 0,
+      expl: "Oui — JeanMichel peut s'abonner à Orageux ET à AlerteInondation. Si les deux appellent actualise() sur JeanMichel, il réagit aux deux. <strong>L'abonnement multiple</strong> est naturel dans le pattern."
+    },
+    {
+      q: "Dans Strategy, comment le Context reçoit-il la Strategy selon les bonnes pratiques ?",
+      opts: [
+        "Via une variable globale statique",
+        "Via injection dans le constructeur ou setStrategy() — injection de dépendances",
+        "Via une Factory Method interne qui crée la bonne Strategy",
+        "Via un switch dans execute() selon le type de données"
+      ],
+      correct: 1,
+      expl: "<strong>Injection de dépendances</strong> : new SystemePaiement(new Visa()) ou setStrategy(new Bancontact()). Les deux respectent DIP et facilitent les tests (injection de mock)."
+    },
+    {
+      q: "Dans Observer, un Observateur peut-il se désabonner pendant que notifie() parcourt la liste ?",
+      opts: [
+        "Oui, sans problème",
+        "Non, c'est techniquement impossible",
+        "Oui si notifie() travaille sur une copie de la liste — sinon ConcurrentModificationException",
+        "Non, mais il sera ignoré au prochain appel"
+      ],
+      correct: 2,
+      expl: "Si un Observateur appelle retirer(this) dans actualise() pendant l'itération → <strong>ConcurrentModificationException</strong>. Solution : notifie() travaille sur une copie snapshot : <code>new ArrayList&lt;&gt;(observateurs)</code>."
+    },
+    {
+      q: "strategy.payer(50) dans le Context est un exemple de quel concept fondamental de la POO ?",
+      opts: [
+        "Encapsulation — les données sont cachées",
+        "Héritage — la méthode est héritée",
+        "Polymorphisme — la même signature s'exécute différemment selon l'implémentation concrète",
+        "Abstraction — la méthode est abstraite"
+      ],
+      correct: 2,
+      expl: "<strong>Polymorphisme</strong> : strategy.payer(50) fait des choses différentes selon si strategy est Visa ou Bancontact. La bonne implémentation est choisie dynamiquement — polymorphisme d'exécution (late binding)."
+    },
+    {
+      q: "Dans Observer, notifie() est-elle déclenchée par le Client ou en interne après modifieEtat() ?",
+      opts: [
+        "Toujours par le Client externe",
+        "Toujours statique",
+        "Toujours abstraite dans chaque SujetConcret",
+        "En interne — modifieEtat() appelle notifie() automatiquement. Le Client modifie l'état, pas la notification"
+      ],
+      correct: 3,
+      expl: "Flux standard : Client appelle <code>orageux.modifieEtat(&quot;pluie&quot;)</code> → modifieEtat() met à jour l'état ET appelle notifie() → notifie() appelle actualise() sur chaque observateur. <strong>Le Client déclenche le changement, pas la notification.</strong>"
+    },
+    {
+      q: "Dans Strategy, le Context dépend-il des ConcreteStrategies ou seulement de l'interface Strategy ?",
+      opts: [
+        "Uniquement de l'interface Strategy — il ne connaît pas Visa, Bancontact... C'est DIP appliqué",
+        "Des ConcreteStrategies, car il les instancie",
+        "Ni de l'un ni de l'autre",
+        "Des ConcreteStrategies via le polymorphisme"
+      ],
+      correct: 0,
+      expl: "<strong>DIP appliqué</strong> : SystemePaiement stocke <code>PaiementStrategy strategy</code> (interface). Il appelle strategy.payer() sans jamais faire new Visa() en interne. Les ConcreteStrategies sont créées et injectées par le Client."
+    },
+    {
+      q: "Observer Pull vs Push : lequel est préférable si chaque Observateur n'a besoin que d'une partie des données ?",
+      opts: [
+        "Push — plus simple à implémenter",
+        "Pull — chaque Observateur prend seulement ce dont il a besoin via getEtat()",
+        "Les deux modes sont équivalents",
+        "Ni l'un ni l'autre"
+      ],
+      correct: 1,
+      expl: "<strong>Pull est préférable</strong> : si le Sujet a 50 attributs mais JeanMichel n'a besoin que de la température et MarieJosée que des précipitations, le Pull évite d'envoyer 50 champs à chacun. Chacun appelle ce qu'il veut."
+    },
+    {
+      q: "Dans Strategy, peut-on passer des paramètres de configuration à une ConcreteStrategy lors de sa création ?",
+      opts: [
+        "Oui — via le constructeur de la ConcreteStrategy (ex: new VisaStrategy(apiKey, timeout))",
+        "Non — les ConcreteStrategies ne peuvent pas avoir de constructeurs avec paramètres",
+        "Oui, mais seulement via des méthodes statiques",
+        "Non — tous les paramètres doivent passer par la méthode de l'interface"
+      ],
+      correct: 0,
+      expl: "Oui — <code>new VisaStrategy(&quot;api_key&quot;, 30)</code> est valide. La ConcreteStrategy peut avoir son propre état de configuration. L'interface définit juste la méthode principale. Création et utilisation sont séparées."
+    }
+  ],
+
+  solid: [
+    {
+      q: "Une classe Employe contient calculateSalary(), saveToDB() et generatePDF(). Quel principe est violé ?",
+      opts: [
+        "Open/Closed Principle",
+        "Single Responsibility Principle — la classe a plusieurs raisons de changer",
+        "Interface Segregation Principle",
+        "Dependency Inversion Principle"
+      ],
+      correct: 1,
+      expl: "Le <strong>SRP</strong> : une classe doit avoir une seule raison de changer. Ici 3 raisons : le calcul du salaire change (raison 1), le mode de persistance change (raison 2), le format du rapport change (raison 3). Solution : séparer en EmployeCalculateur, EmployeRepository, EmployeRapport."
+    },
+    {
+      q: "Un développeur doit ajouter PayPal en modifiant directement la classe SystemePaiement existante. Quel principe est violé ?",
+      opts: [
+        "Single Responsibility Principle",
+        "Liskov Substitution Principle",
+        "Open/Closed Principle — on modifie du code existant au lieu d'étendre",
+        "Interface Segregation Principle"
+      ],
+      correct: 2,
+      expl: "Le <strong>OCP</strong> : ouvert à l'extension, fermé à la modification. Ajouter PayPal devrait se faire en créant <code>PayPalStrategy</code>, sans toucher à SystemePaiement. Le pattern Strategy est la solution typique pour respecter OCP dans ce cas."
+    },
+    {
+      q: "Quel est le principe de Liskov Substitution en termes simples ?",
+      opts: [
+        "Une classe ne doit hériter que d'une seule classe parente",
+        "Les interfaces doivent être aussi petites que possible",
+        "On doit toujours utiliser des interfaces plutôt que des classes abstraites",
+        "Une sous-classe peut toujours remplacer sa classe parente sans altérer le comportement correct du programme"
+      ],
+      correct: 3,
+      expl: "LSP : si <code>B extends A</code>, partout où on utilise A, on doit pouvoir mettre B sans que ça plante ou donne des résultats inattendus. Le Carré qui extends Rectangle est l'exemple classique de violation : setLargeur() casse les invariants du Rectangle."
+    },
+    {
+      q: "Une interface Travailleur contient travailler(), manger() et dormir(). Un Robot implémente manger() et dormir() avec des corps vides. Quel principe est violé ?",
+      opts: [
+        "Interface Segregation Principle — le Robot est forcé d'implémenter des méthodes inutiles",
+        "Single Responsibility Principle",
+        "Open/Closed Principle",
+        "Dependency Inversion Principle"
+      ],
+      correct: 0,
+      expl: "L'<strong>ISP</strong> : un client ne doit pas être forcé de dépendre d'interfaces qu'il n'utilise pas. Solution : séparer en deux interfaces — <code>Travailleur</code> (travailler()) et <code>EtreVivant</code> (manger(), dormir()). Le Robot n'implémente que Travailleur."
+    },
+    {
+      q: "ServiceCommande crée directement new MySQLDatabase() en son sein. Quel principe est violé et quelle est la solution ?",
+      opts: [
+        "SRP — ServiceCommande devrait déléguer la création à une autre classe",
+        "DIP — ServiceCommande devrait dépendre d'une interface Database, pas de MySQLDatabase concrète",
+        "OCP — MySQLDatabase devrait être extensible sans modification",
+        "LSP — MySQLDatabase devrait pouvoir être remplacée par ses sous-classes"
+      ],
+      correct: 1,
+      expl: "Le <strong>DIP</strong> : les modules de haut niveau (ServiceCommande) ne doivent pas dépendre des modules de bas niveau (MySQLDatabase). Solution : créer une interface <code>Database</code>, injecter la dépendance dans le constructeur. Changer de BDD = juste une nouvelle implémentation."
+    },
+    {
+      q: "Lequel de ces énoncés décrit correctement le principe DIP ?",
+      opts: [
+        "Les classes de bas niveau ne doivent pas hériter des classes de haut niveau",
+        "On doit toujours inverser les conditions dans les if/else",
+        "Les modules de haut niveau contrôlent directement les modules de bas niveau",
+        "Les modules de haut et bas niveau doivent tous deux dépendre d'abstractions (interfaces), pas les uns des autres directement"
+      ],
+      correct: 3,
+      expl: "Le <strong>DIP</strong> inverse la dépendance habituelle : au lieu que ServiceCommande → MySQLDatabase, on a ServiceCommande → interface Database ← MySQLDatabase. Les deux dépendent de l'abstraction. C'est la base de l'injection de dépendances."
+    },
+    {
+      q: "Quel principe SOLID est directement lié au fait qu'on préfère programmer par interfaces plutôt que par classes concrètes en Java ?",
+      opts: [
+        "Single Responsibility Principle",
+        "Open/Closed Principle",
+        "Dependency Inversion Principle — dépendre d'abstractions, jamais de classes concrètes",
+        "Interface Segregation Principle"
+      ],
+      correct: 2,
+      expl: "Le <strong>DIP</strong> fonde la règle 'programmer vers une interface, pas une implémentation'. En dépendant d'interfaces, on peut changer l'implémentation concrète (MySQLDatabase → PostgreSQLDatabase) sans modifier le code client. C'est aussi le fondement de l'injection de dépendances."
+    },
+    {
+      q: "Une classe Rapport contient genererPDF(), genererCSV() et genererHTML(). SRP est-il violé ?",
+      opts: [
+        "Non, car toutes les méthodes sont liées aux rapports",
+        "Non, 3 méthodes c'est raisonnable pour une seule classe",
+        "Oui — chaque format de génération est une raison de changer indépendante. Un changement PDF ne devrait pas toucher CSV",
+        "Non, SRP ne s'applique qu'aux méthodes de données"
+      ],
+      correct: 2,
+      expl: "Oui — <strong>SRP est violé</strong> : si le format PDF change (nouvelle bibliothèque), il faut toucher la classe Rapport. Si le format CSV change, rebelote. Chaque format = une raison de changer. Solution : RapportPDFGenerator, RapportCSVGenerator, RapportHTMLGenerator."
+    },
+    {
+      q: "Une interface Forme contient aire(), perimetre() et afficher(). Quel principe pourrait être violé ?",
+      opts: [
+        "OCP — Forme ne peut pas être étendue",
+        "ISP — le calcul géométrique et l'affichage sont deux responsabilités. Une classe de calcul pur ne devrait pas implémenter afficher()",
+        "DIP — Forme est une interface concrète",
+        "LSP — les sous-formes ne peuvent pas substituer Forme"
+      ],
+      correct: 1,
+      expl: "<strong>ISP</strong> : une classe qui veut juste calculer une surface serait forcée d'implémenter afficher(). Solution : deux interfaces — <code>FormeGeometrique</code> (aire(), perimetre()) et <code>Affichable</code> (afficher()). Une classe implémente seulement ce dont elle a besoin."
+    },
+    {
+      q: "Autruche extends Oiseau surcharge voler() avec throw new UnsupportedOperationException(). Quel principe est violé ?",
+      opts: [
+        "SRP",
+        "OCP",
+        "ISP",
+        "LSP — on ne peut plus substituer Oiseau par Autruche sans risquer une exception là où du code attend qu'un Oiseau puisse voler"
+      ],
+      correct: 3,
+      expl: "<strong>LSP</strong> : si du code fait oiseau.voler() et qu'on lui passe une Autruche, l'exception plante le programme. L'Autruche ne peut pas remplacer Oiseau sans altérer le comportement. Solution : hiérarchie différente — OiseauVolant extends Oiseau, Autruche extends Oiseau."
+    },
+    {
+      q: "ServiceEmail contient new SMTPServer() directement dans son code. Quel principe est violé ?",
+      opts: [
+        "SRP",
+        "OCP",
+        "DIP — ServiceEmail (haut niveau) dépend directement de SMTPServer (bas niveau concret) au lieu d'une interface EmailSender",
+        "LSP"
+      ],
+      correct: 2,
+      expl: "<strong>DIP</strong> : ServiceEmail devrait dépendre de l'interface <code>EmailSender</code>. SMTPServer et SendGridSender implémentent EmailSender. On injecte la dépendance dans le constructeur. Changer de serveur email = juste une nouvelle implémentation injectée."
+    },
+    {
+      q: "Un Calculateur appelle forme.aire() sans if/else — il fonctionne avec toute nouvelle Forme qui implémente l'interface. Quel principe est respecté ?",
+      opts: [
+        "SRP",
+        "OCP — on peut ajouter Triangle, Ellipse... sans modifier le Calculateur",
+        "LSP",
+        "ISP"
+      ],
+      correct: 1,
+      expl: "<strong>OCP</strong> en action : le Calculateur est <em>fermé</em> à la modification (on ne le change pas) mais <em>ouvert</em> à l'extension (n'importe quelle nouvelle Forme qui implémente l'interface fonctionne automatiquement). C'est le polymorphisme au service d'OCP."
+    },
+    {
+      q: "Quelle est la différence principale entre SRP et OCP ?",
+      opts: [
+        "SRP parle de la cohérence interne d'une classe (une raison de changer). OCP parle de l'extension : on ajoute sans modifier",
+        "SRP est pour les classes, OCP est pour les interfaces",
+        "SRP s'applique aux méthodes, OCP aux classes entières",
+        "Ce sont deux noms pour le même principe"
+      ],
+      correct: 0,
+      expl: "<strong>SRP</strong> = cohérence interne. Une classe fait une seule chose et a une seule raison de changer. <strong>OCP</strong> = évolution externe. On peut ajouter de nouvelles fonctionnalités sans modifier le code existant. SRP parle de ce qu'une classe EST, OCP parle de comment elle ÉVOLUE."
+    },
+    {
+      q: "Quelle est la différence entre ISP et DIP ?",
+      opts: [
+        "ISP est pour les classes abstraites, DIP pour les interfaces",
+        "ISP parle des dépendances entre modules, DIP parle de la taille des interfaces",
+        "ISP : ne pas forcer une classe à implémenter des méthodes inutiles (interfaces petites et ciblées). DIP : dépendre d'abstractions, pas de classes concrètes",
+        "Ils sont identiques"
+      ],
+      correct: 2,
+      expl: "<strong>ISP</strong> = granularité des interfaces : plusieurs petites interfaces spécifiques valent mieux qu'une grosse interface. <strong>DIP</strong> = direction des dépendances : tout le monde dépend d'abstractions, jamais de classes concrètes. Deux préoccupations totalement différentes."
+    },
+    {
+      q: "Quel principe SOLID est directement renforcé par le pattern Strategy ?",
+      opts: [
+        "SRP",
+        "OCP — ajouter un algorithme = nouvelle classe, sans modifier les existantes",
+        "LSP",
+        "ISP"
+      ],
+      correct: 1,
+      expl: "<strong>OCP</strong> : le Context (SystemePaiement) est fermé à la modification, ouvert à l'extension. Ajouter Mastercard = créer MastercardStrategy. Aucune ligne du Context ne change. Le pattern Strategy est une implémentation directe d'OCP pour les algorithmes."
+    },
+    {
+      q: "Quel principe SOLID est directement renforcé par le pattern Observer ?",
+      opts: [
+        "SRP uniquement",
+        "OCP uniquement",
+        "LSP uniquement",
+        "OCP et DIP — le Sujet dépend de l'interface Observateur (DIP), et on ajoute des observateurs sans modifier le Sujet (OCP)"
+      ],
+      correct: 3,
+      expl: "<strong>DIP</strong> : le Sujet stocke List&lt;Observateur&gt; (interface), pas des types concrets. <strong>OCP</strong> : ajouter un nouvel observateur (météo app, SMS...) = créer une nouvelle classe sans toucher au Sujet. Observer combine naturellement DIP et OCP."
+    },
+    {
+      q: "Quel principe SOLID suggère de créer des interfaces Imprimable et Scannnable plutôt qu'une unique MachineMultifonction ?",
+      opts: [
+        "ISP — une imprimante simple ne doit pas être forcée d'implémenter scanner()",
+        "DIP",
+        "SRP",
+        "OCP"
+      ],
+      correct: 0,
+      expl: "<strong>ISP</strong> : une ImprimanteSimple qui implémente MachineMultifonction serait forcée de fournir scanner() et faxer() vides. En séparant Imprimable et Scannable, chaque classe implémente uniquement ce qu'elle supporte réellement."
+    },
+    {
+      q: "Dans DIP, qu'est-ce qu'une 'abstraction' ?",
+      opts: [
+        "Une classe abstraite Java uniquement (abstract class)",
+        "Une interface ou classe abstraite — tout ce qui définit un contrat sans l'implémenter",
+        "Un design pattern",
+        "Une méthode statique"
+      ],
+      correct: 1,
+      expl: "Dans le contexte DIP, <strong>abstraction</strong> = tout ce qui définit un contrat sans l'implémenter : <code>interface Database</code>, <code>abstract class EmailSender</code>... L'important est que le module de haut niveau ne sache pas ce qui s'exécute concrètement — il dépend du contrat, pas de l'implémentation."
+    },
+    {
+      q: "GestionnaireEmployes a ajouterEmploye(), supprimerEmploye(), listerEmployes() et genererRapportPDF(). SRP est-il violé ?",
+      opts: [
+        "Non, tout est lié à la gestion des employés",
+        "Non, 4 méthodes c'est raisonnable",
+        "Oui — la gestion CRUD des employés et la génération de rapport sont deux responsabilités distinctes",
+        "Non, SRP autorise les méthodes de rapport dans une classe de gestion"
+      ],
+      correct: 2,
+      expl: "Oui — <strong>2 raisons de changer</strong> : (1) la logique métier de gestion des employés change, (2) le format du rapport PDF change. Solution : GestionnaireEmployes garde le CRUD, EmployeRapportGenerator prend genererRapportPDF(). Chaque classe a une seule responsabilité."
+    },
+    {
+      q: "LSP violation classique : Carré extends Rectangle. Pourquoi est-ce une violation ?",
+      opts: [
+        "Car un carré n'est pas un rectangle en géométrie pure",
+        "Car Carré est plus spécialisé que Rectangle",
+        "Car Rectangle devrait étendre Carré",
+        "Si setHauteur(5) est appelé sur un Carré, il modifie aussi la largeur — ce comportement casse les invariants du Rectangle"
+      ],
+      correct: 3,
+      expl: "Un Rectangle a l'invariant : setHauteur() ne modifie pas la largeur. Un Carré doit maintenir hauteur==largeur, donc surcharge setHauteur() pour aussi modifier la largeur. Du code qui fait <code>r.setHauteur(5); assert r.getLargeur() != 5</code> plante avec un Carré — <strong>LSP violé</strong>."
+    },
+    {
+      q: "Lequel respecte mieux OCP : A) switch(type) dans une méthode de calcul, ou B) interface Shape avec polymorphisme ?",
+      opts: [
+        "A — le switch est plus explicite et facile à maintenir",
+        "B — avec polymorphisme, ajouter un type = nouvelle classe sans toucher au code existant",
+        "Les deux sont équivalents en termes d'OCP",
+        "A — plus facile à déboguer"
+      ],
+      correct: 1,
+      expl: "<strong>B respecte OCP</strong> : ajouter Triangle = créer Triangle implements Shape. Zero modification du Calculateur. Avec le switch, ajouter Triangle = ouvrir le Calculateur et ajouter un case. C'est la modification que OCP cherche précisément à éviter."
+    },
+    {
+      q: "En ajoutant des fonctionnalités via le pattern Décorateur (sans modifier les classes existantes), quel principe SOLID est respecté ?",
+      opts: [
+        "SRP",
+        "OCP — on étend le comportement sans modifier le code source existant",
+        "LSP",
+        "ISP"
+      ],
+      correct: 1,
+      expl: "<strong>OCP</strong> : Café, Lait, Chantilly restent inchangés. On ajoute Vanille = créer VanilleDecorateur. Zéro modification des classes existantes. Le Décorateur est une implémentation concrète d'OCP pour l'enrichissement de comportement."
+    },
+    {
+      q: "ServicePaiement dépend de PaiementStrategy (interface). Quel(s) principe(s) SOLID est/sont respecté(s) ?",
+      opts: [
+        "SRP seulement",
+        "OCP seulement",
+        "ISP seulement",
+        "DIP (dépendance vers une abstraction) ET OCP (on peut ajouter des stratégies sans modifier ServicePaiement)"
+      ],
+      correct: 3,
+      expl: "<strong>DIP</strong> : ServicePaiement dépend de PaiementStrategy (interface), pas de Visa ou Bancontact concrètes. <strong>OCP</strong> : ajouter PayPal = créer PayPalStrategy, sans modifier ServicePaiement. Les deux principes sont satisfaits simultanément."
+    },
+    {
+      q: "Une méthode traiterAnimal(Animal a) fonctionne correctement avec Chien ou Chat passés en paramètre. Quel principe est respecté ?",
+      opts: [
+        "SRP",
+        "OCP",
+        "LSP — Chien et Chat peuvent substituer Animal sans altérer le comportement attendu",
+        "ISP"
+      ],
+      correct: 2,
+      expl: "<strong>LSP</strong> : Chien et Chat peuvent remplacer Animal partout sans que le programme se comporte de façon incorrecte. C'est la définition même du principe — la substitutabilité. On peut passer un Chien où un Animal est attendu, sans surprise."
+    },
+    {
+      q: "Quel principe SOLID dit qu'il faut préférer des interfaces spécifiques à une seule grosse interface générale ?",
+      opts: [
+        "SRP",
+        "OCP",
+        "LSP",
+        "ISP — Interface Segregation Principle"
+      ],
+      correct: 3,
+      expl: "<strong>ISP</strong> : 'les clients ne devraient pas être forcés de dépendre d'interfaces qu'ils n'utilisent pas'. Mieux vaut plusieurs interfaces petites (Volable, Nageable, Coureur) qu'une seule grosse interface Animal avec toutes les méthodes. Chaque classe implémente seulement ce qui lui est pertinent."
+    },
+    {
+      q: "Une classe UserService contient createUser(), sendWelcomeEmail() et logActivity(). Combien a-t-elle de responsabilités ?",
+      opts: [
+        "1 — tout concerne les utilisateurs",
+        "2 — création et notification",
+        "3 — création, email et logging sont trois responsabilités distinctes",
+        "4 — une responsabilité par méthode"
+      ],
+      correct: 2,
+      expl: "<strong>3 responsabilités</strong> : logique métier, envoi d'emails (dépend d'un service mail), logging (dépend d'un système de log). Solution : UserRepository, EmailService, ActivityLogger — chacun a une seule raison de changer."
+    },
+    {
+      q: "Pingouin extends Oiseau surcharge voler() en levant une exception. Que suggère LSP comme solution ?",
+      opts: [
+        "Supprimer voler() de Oiseau",
+        "Rendre voler() optionnelle avec une implémentation vide par défaut",
+        "Créer une classe OiseauTerrestre",
+        "Créer une interface Volable séparée — seuls les oiseaux qui volent l'implémentent. Pingouin extends Oiseau sans implémenter Volable"
+      ],
+      correct: 3,
+      expl: "Solution LSP : <code>interface Volable { void voler(); }</code>. Aigle implements Volable, Pingouin n'implémente pas Volable. Du code qui attend un Volable sait que la méthode fonctionnera sans exception."
+    },
+    {
+      q: "Interface Vehicule avec accelerer(), freiner() et rechargerBatterie(). Une Ferrari (essence) doit implémenter rechargerBatterie() vide. Quel principe est violé ?",
+      opts: [
+        "ISP — Ferrari ne devrait pas être forcée d'implémenter rechargerBatterie()",
+        "SRP — Vehicule a trop de responsabilités",
+        "OCP — on ne peut pas étendre Vehicule",
+        "LSP — Ferrari ne peut pas substituer Vehicule"
+      ],
+      correct: 0,
+      expl: "<strong>ISP</strong> : solution — <code>Vehicule</code> (accelerer, freiner) et <code>VehiculeElectrique extends Vehicule</code> (rechargerBatterie). Ferrari implements Vehicule, Tesla implements VehiculeElectrique."
+    },
+    {
+      q: "FactureService doit fonctionner avec MySQL, PostgreSQL et MongoDB. Quel principe guide la conception ?",
+      opts: [
+        "SRP — chaque BDD a sa propre classe",
+        "OCP — on peut ajouter des BDs sans modifier FactureService",
+        "DIP — FactureService dépend d'une interface FactureRepository, les trois BDs l'implémentent",
+        "LSP — les BDs peuvent se substituer"
+      ],
+      correct: 2,
+      expl: "<strong>DIP</strong> : FactureService(FactureRepository repo). MySQLFactureRepo, PostgresFactureRepo, MongoFactureRepo implémentent FactureRepository. Changer de BDD = changer l'injection, pas le code de FactureService."
+    },
+    {
+      q: "Interface IAnimal avec voler(), nager(), courir(), grimper(). Un Serpent doit implémenter toutes les méthodes. Quel principe est violé ?",
+      opts: [
+        "SRP",
+        "OCP",
+        "DIP",
+        "ISP — le Serpent est forcé d'implémenter voler(), courir(), grimper() qu'il ne peut pas faire"
+      ],
+      correct: 3,
+      expl: "<strong>ISP</strong> : solution — interfaces séparées : Volable, Nageable, Coureur, Grimpeur. Serpent implements Nageable seulement. Chaque classe prend exactement les capacités dont elle a besoin."
+    },
+    {
+      q: "Pourquoi la couche Service ne devrait-elle pas importer directement javax.persistence.EntityManager ?",
+      opts: [
+        "SRP — Service aurait trop de responsabilités",
+        "DIP — Service (haut niveau) ne devrait pas dépendre de la technologie de persistance (bas niveau). Passer par une interface Repository",
+        "OCP — on ne peut pas étendre EntityManager",
+        "LSP — EntityManager ne peut pas être substitué"
+      ],
+      correct: 1,
+      expl: "<strong>DIP</strong> : Service → interface UserRepository ← UserRepositoryJPA. Si on change de JPA à JDBC ou à un mock de test, Service ne change pas. La couche métier est isolée des détails techniques."
+    },
+    {
+      q: "Chien.toString() retourne 'Chien: Rex', Chat.toString() retourne 'Chat: Minou'. LSP est-il respecté ?",
+      opts: [
+        "Oui — Chien et Chat peuvent substituer Animal, le contrat de toString() est honoré",
+        "Non — les valeurs retournées sont différentes, LSP est violé",
+        "Oui, mais seulement si toString() retourne void",
+        "Non — des comportements trop différents violent LSP"
+      ],
+      correct: 0,
+      expl: "<strong>LSP respecté</strong>. Le contrat de toString() est de retourner une représentation textuelle. Chien et Chat l'honorent. LSP ne dit pas que le retour doit être identique, mais que le contrat est respecté."
+    },
+    {
+      q: "Quel principe guide le fait de déclarer List<Animal> au lieu de ArrayList<Animal> ?",
+      opts: [
+        "SRP",
+        "DIP — on dépend de l'abstraction List (interface) plutôt que d'ArrayList (concrète)",
+        "OCP",
+        "ISP"
+      ],
+      correct: 1,
+      expl: "<strong>DIP à petite échelle</strong> : si on change ArrayList pour LinkedList, seule la ligne new ArrayList<>() change. Tout le code qui utilise animaux via l'interface List reste intact."
+    },
+    {
+      q: "Classe Formulaire avec valider(), sauvegarder() et afficher(). Combien de raisons de changer a-t-elle ?",
+      opts: [
+        "1 — tout concerne le formulaire",
+        "2 — logique et affichage",
+        "3 — règles de validation, technologie de persistance, et format d'affichage",
+        "4 — une par méthode"
+      ],
+      correct: 2,
+      expl: "<strong>3 raisons de changer</strong> : règles métier de validation, technologie de sauvegarde, format d'affichage. Solution : ValidateurFormulaire, FormulaireRepository, FormulaireRenderer."
+    },
+    {
+      q: "Quel principe guide la création d'une interface PaymentGateway que PayPal, Stripe et Braintree implémentent ?",
+      opts: [
+        "SRP",
+        "OCP",
+        "LSP",
+        "DIP — le code dépend de l'abstraction PaymentGateway, pas des implémentations concrètes"
+      ],
+      correct: 3,
+      expl: "<strong>DIP</strong> : le code dépend de PaymentGateway (interface). On peut changer de prestataire en changeant l'injection. C'est aussi OCP : on ajoute Google Pay sans modifier le code existant."
+    },
+    {
+      q: "Quel principe est respecté si changer Log4j pour SLF4J ne nécessite aucune modification du code métier ?",
+      opts: [
+        "SRP",
+        "OCP",
+        "DIP — le code métier dépend d'une interface Logger, pas de Log4j concret",
+        "LSP"
+      ],
+      correct: 2,
+      expl: "<strong>DIP</strong> : le code appelle logger.info() via une interface Logger. Log4jLogger et SLF4JLogger implémentent Logger. Changer de framework = changer la configuration d'injection, pas le code métier."
+    },
+    {
+      q: "Interface Employe avec travailler(), prendreConge() et prendreCafe(). Un Freelance implémente prendreConge() vide. Quel principe est violé ?",
+      opts: [
+        "ISP — Freelance est forcé d'implémenter prendreConge() qui ne le concerne pas",
+        "SRP",
+        "OCP",
+        "LSP"
+      ],
+      correct: 0,
+      expl: "<strong>ISP</strong> : solution — Travailleur (travailler()) et SalarieCDI (prendreConge(), prendreCafe()). Freelance implements Travailleur seulement. Pas de méthodes vides."
+    },
+    {
+      q: "AutrucheVolante extends Oiseau améliore voler() sans casser les invariants. LSP est-il respecté ?",
+      opts: [
+        "Oui — AutrucheVolante peut substituer Oiseau partout sans altérer le comportement attendu",
+        "Non — on ne peut pas modifier le comportement hérité",
+        "Non — AutrucheVolante viole SRP",
+        "Oui mais seulement si voler() est final dans Oiseau"
+      ],
+      correct: 0,
+      expl: "<strong>LSP respecté</strong> : AutrucheVolante améliore voler() mais respecte le contrat — elle peut voler. Partout où un Oiseau est attendu, AutrucheVolante fonctionne. LSP ne dit pas que le comportement doit être identique, juste compatible."
+    },
+    {
+      q: "Interface Notification avec envoyerEmail(), envoyerSMS(), envoyerPush(). ServiceEmail implémente les deux autres vides. Quel principe est violé ?",
+      opts: [
+        "SRP",
+        "ISP — ServiceEmail ne devrait dépendre que de EmailNotifier",
+        "OCP",
+        "DIP"
+      ],
+      correct: 1,
+      expl: "<strong>ISP</strong> : solution — EmailNotifier (envoyerEmail()), SMSNotifier (envoyerSMS()), PushNotifier (envoyerPush()). ServiceEmail implements EmailNotifier seulement. Pas de méthodes vides."
+    },
+    {
+      q: "Quel principe SOLID correspond à la 'cohésion' — toutes les méthodes d'une classe travaillent vers le même but ?",
+      opts: [
+        "SRP — une classe cohérente a une seule responsabilité et une seule raison de changer",
+        "OCP",
+        "LSP",
+        "DIP"
+      ],
+      correct: 0,
+      expl: "<strong>SRP</strong> et cohésion sont liés : une classe très cohérente a naturellement une seule raison de changer. Une classe peu cohérente (méthodes disparates) a plusieurs raisons de changer — SRP est probablement violé."
+    },
+    {
+      q: "calculerPrime(Employe e) appelle des méthodes propres à Manager non définies dans Employe. Quel principe est violé ?",
+      opts: [
+        "SRP",
+        "OCP",
+        "ISP",
+        "LSP — la méthode ne peut plus accepter n'importe quel Employe sans risque de ClassCastException"
+      ],
+      correct: 3,
+      expl: "<strong>LSP violé</strong> : si en interne on fait ((Manager)e).getBonus(), passer un EmployéStandard lèvera ClassCastException. La méthode rompt le contrat de substitutabilité."
+    },
+    {
+      q: "Classe Logger avec info(), warn(), error() et formatMessage(). SRP est-il respecté ?",
+      opts: [
+        "Probablement oui — toutes les méthodes servent le logging. formatMessage est un helper interne",
+        "Non — formatter est une responsabilité totalement distincte",
+        "Non — 4 méthodes violent toujours SRP",
+        "Oui uniquement si Logger est statique"
+      ],
+      correct: 0,
+      expl: "<strong>SRP probablement respecté</strong> : toutes les méthodes servent la responsabilité de logging. formatMessage est un détail d'implémentation interne. Si formatMessage devenait réutilisable ailleurs, on pourrait alors la séparer."
+    },
+    {
+      q: "Quel principe est respecté quand Chien.faireDuBruit() et Chat.faireDuBruit() substituent Animal.faireDuBruit() sans problème ?",
+      opts: [
+        "SRP",
+        "OCP",
+        "LSP — Chien et Chat respectent le contrat sans casser les invariants d'Animal",
+        "ISP"
+      ],
+      correct: 2,
+      expl: "<strong>LSP respecté</strong> : le contrat de faireDuBruit() est de retourner un son. Chien et Chat l'honorent chacun à leur façon. LSP n'exige pas un résultat identique — il exige la compatibilité avec le contrat."
+    },
+    {
+      q: "Interface Stockage avec lire(f), ecrire(f) et compresser(f). StockageCloud n'a pas besoin de compresser. Quel principe suggère de séparer ?",
+      opts: [
+        "SRP",
+        "ISP — StockageCloud ne devrait pas être forcé d'implémenter compresser()",
+        "DIP",
+        "OCP"
+      ],
+      correct: 1,
+      expl: "<strong>ISP</strong> : solution — StockageBasique (lire, ecrire) et StockageCompresse extends StockageBasique (compresser). StockageCloud implements StockageBasique. Pas de méthodes vides."
+    },
+    {
+      q: "Quel principe est violé si ServiceCommande hérite de MySQLServiceCommande pour accéder à la BDD ?",
+      opts: [
+        "SRP — ServiceCommande fait trop de choses",
+        "OCP — on ne peut pas l'étendre",
+        "DIP — l'héritage couple fortement ServiceCommande (haut niveau) à MySQL (bas niveau)",
+        "ISP — l'interface héritée est trop grande"
+      ],
+      correct: 2,
+      expl: "<strong>DIP</strong> : ServiceCommande hérite de MySQLServiceCommande → couplage fort. Si on veut PostgreSQL, tout change. Solution : injecter CommandeRepository (interface). Changer de BDD = changer l'injection seulement."
+    },
+    {
+      q: "Si tout le code utilise List<Forme> au lieu d'ArrayList<Forme>, que se passe-t-il quand on change ArrayList pour LinkedList ?",
+      opts: [
+        "Il faut changer toutes les déclarations de type",
+        "Seule la ligne new ArrayList<>() change en new LinkedList<>() — le reste du code est intact",
+        "Il faut modifier toutes les méthodes qui utilisent la liste",
+        "Rien ne change, les deux sont identiques"
+      ],
+      correct: 1,
+      expl: "<strong>DIP payant</strong> : une seule ligne change. Tout le code qui appelle .add(), .get(), boucle sur la liste via l'interface List reste intact. C'est l'intérêt de dépendre d'abstractions."
+    }
+  ]
+};
+
+// ─────────────────────────────────────────────
+// DRAW LOGIC
+// ─────────────────────────────────────────────
+const PICK = { creation: 8, structure: 6, comportement: 7, solid: 9 };
+const CAT_LABELS = {
+  creation: "Création",
+  structure: "Structure",
+  comportement: "Comportement",
+  solid: "SOLID"
+};
+
+let correct = 0;
+let answered = 0;
+let currentDraw = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function drawQuestions() {
+  let questions = [];
+  for (const cat in PICK) {
+    const picked = shuffle(POOL[cat]).slice(0, PICK[cat]);
+    picked.forEach(q => questions.push({ ...q, cat }));
+  }
+  return shuffle(questions);
+}
+
+function renderQuestions(questions) {
+  const container = document.getElementById('questions-container');
+  container.innerHTML = '';
+  questions.forEach((q, idx) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    const optsHTML = q.opts.map((opt, i) =>
+      `<button class="option" onclick="answer(this,'${i}')"><span class="option-letter">${letters[i]}</span>${opt}</button>`
+    ).join('');
+    container.innerHTML += `
+      <div class="question-card" data-correct="${q.correct}">
+        <div class="question-meta">
+          <span class="question-num">Question ${idx + 1}</span>
+          <span class="cat-badge cat-${q.cat}">${CAT_LABELS[q.cat]}</span>
+        </div>
+        <div class="question-text">${q.q}</div>
+        <div class="options">${optsHTML}</div>
+        <div class="explanation">${q.expl}</div>
+      </div>`;
+  });
+  updateInfo(questions);
+}
+
+function updateInfo(questions) {
+  const counts = {};
+  questions.forEach(q => { counts[q.cat] = (counts[q.cat] || 0) + 1; });
+  const parts = Object.entries(counts).map(([cat, n]) => `${n} ${CAT_LABELS[cat]}`);
+  document.getElementById('tirage-info').textContent =
+    `Tirage aléatoire — ${questions.length} questions : ${parts.join(' · ')} — parmi un pool de 90 questions`;
+}
+
+function newDraw() {
+  correct = 0;
+  answered = 0;
+  currentDraw = drawQuestions();
+  renderQuestions(currentDraw);
+  updateScore();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─────────────────────────────────────────────
+// INTERACTION
+// ─────────────────────────────────────────────
+function answer(btn, choiceIdx) {
+  const card = btn.closest('.question-card');
+  if (card.dataset.answered) return;
+  card.dataset.answered = 'true';
+
+  const correctIdx = parseInt(card.dataset.correct);
+  const allOptions = card.querySelectorAll('.option');
+  const explanation = card.querySelector('.explanation');
+
+  allOptions.forEach(opt => opt.disabled = true);
+
+  if (parseInt(choiceIdx) === correctIdx) {
+    btn.classList.add('correct');
+    correct++;
+  } else {
+    btn.classList.add('wrong');
+    allOptions[correctIdx].classList.add('revealed-correct');
+  }
+
+  explanation.classList.add('visible');
+  answered++;
+  updateScore();
+}
+
+function updateScore() {
+  const answeredCards = document.querySelectorAll('.question-card[data-answered]').length;
+  const pct = answeredCards > 0 ? Math.round((correct / answeredCards) * 100) : 0;
+  document.getElementById('score-display').textContent = correct + ' / ' + answeredCards;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = answeredCards > 0 ? pct + '% correct' : '0 répondu(e)s';
+}
+
+function resetAll() {
+  correct = 0;
+  answered = 0;
+  document.querySelectorAll('.question-card').forEach(card => {
+    delete card.dataset.answered;
+    card.querySelectorAll('.option').forEach(opt => {
+      opt.classList.remove('correct', 'wrong', 'revealed-correct');
+      opt.disabled = false;
+    });
+    const exp = card.querySelector('.explanation');
+    if (exp) exp.classList.remove('visible');
+  });
+  updateScore();
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+newDraw();
+</script>
+</body>
+</html>

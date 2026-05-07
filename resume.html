@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Résumé — Java Study</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.sidebar-nav-home {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1.5rem; color: var(--text3);
+  text-decoration: none; font-size: 0.8rem;
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 0.5rem; transition: color 0.2s;
+}
+.sidebar-nav-home:hover { color: var(--text); }
+
+/* MEMO CARDS GRID */
+.memo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.memo-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  scroll-margin-top: 2rem;
+}
+.memo-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+
+.memo-card.creation { border-left: 3px solid var(--creation); }
+.memo-card.structure { border-left: 3px solid var(--structure); }
+.memo-card.comportement { border-left: 3px solid var(--comportement); }
+
+.memo-pattern-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.15rem;
+  margin-bottom: 0.4rem;
+}
+.memo-pattern-name.creation { color: var(--creation); }
+.memo-pattern-name.structure { color: var(--structure); }
+.memo-pattern-name.comportement { color: var(--comportement); }
+
+.memo-phrase {
+  font-size: 0.9rem;
+  color: var(--text2);
+  line-height: 1.55;
+  margin-bottom: 0.75rem;
+  font-style: italic;
+}
+
+.memo-keyphrase {
+  font-size: 0.8rem;
+  color: var(--accent);
+  background: rgba(124,111,255,0.08);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  line-height: 1.5;
+  border: 1px solid rgba(124,111,255,0.15);
+}
+
+/* FACTORY COMPARISON TABLE */
+.factory-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+}
+.factory-table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+.factory-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.factory-table tr:last-child td { border-bottom: none; }
+.factory-table td:first-child {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1rem;
+  color: var(--creation);
+  white-space: nowrap;
+}
+.factory-table tr:hover td { background: rgba(247,151,30,0.04); }
+
+/* SOLID SUMMARY */
+.solid-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.solid-summary-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  transition: transform 0.2s;
+}
+.solid-summary-card:hover { transform: translateY(-2px); }
+.solid-big-letter {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.solid-summary-card:nth-child(1) .solid-big-letter { color: #7c6fff; }
+.solid-summary-card:nth-child(2) .solid-big-letter { color: #43e97b; }
+.solid-summary-card:nth-child(3) .solid-big-letter { color: #f7971e; }
+.solid-summary-card:nth-child(4) .solid-big-letter { color: #ff6b6b; }
+.solid-summary-card:nth-child(5) .solid-big-letter { color: #38bdf8; }
+.solid-summary-content {}
+.solid-summary-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+.solid-summary-full {
+  font-size: 0.75rem;
+  font-family: 'DM Mono', monospace;
+  color: var(--text3);
+  margin-bottom: 0.5rem;
+}
+.solid-summary-phrase {
+  font-size: 0.85rem;
+  color: var(--text2);
+  line-height: 1.5;
+  font-style: italic;
+}
+.solid-summary-keyphrase {
+  margin-top: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--accent);
+  background: rgba(124,111,255,0.08);
+  border-radius: 5px;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid rgba(124,111,255,0.15);
+}
+
+/* QUICK REF TABLE */
+.quick-ref {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+.quick-ref-header {
+  padding: 1rem 1.5rem;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+}
+.quick-ref table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.quick-ref th {
+  text-align: left;
+  padding: 0.6rem 1.5rem;
+  background: var(--surface2);
+  color: var(--text3);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 400;
+}
+.quick-ref td {
+  padding: 0.7rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+  line-height: 1.5;
+}
+.quick-ref tr:last-child td { border-bottom: none; }
+.quick-ref td:first-child {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+.tag-creation { color: var(--creation); }
+.tag-structure { color: var(--structure); }
+.tag-comportement { color: var(--comportement); }
+
+/* DIFF PUSH PULL */
+.pushpull-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.pushpull-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+.pushpull-card h4 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  color: var(--comportement);
+}
+.pushpull-card ul {
+  list-style: none;
+  padding: 0;
+}
+.pushpull-card li {
+  font-size: 0.85rem;
+  color: var(--text2);
+  padding: 0.3rem 0;
+  padding-left: 1rem;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.5;
+}
+.pushpull-card li:last-child { border-bottom: none; }
+.pushpull-card li strong { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="page-wrapper">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a href="index.html">⬡ Java Study Guide</a>
+    <span>Résumé & Fiches Mémo</span>
+  </div>
+  <a href="index.html" class="sidebar-nav-home">← Accueil</a>
+
+  <div class="sidebar-section">Design Patterns</div>
+  <a href="#dp-phrases-struct" class="sidebar-link structure">Phrases clés — Structure</a>
+  <a href="#dp-phrases-comp" class="sidebar-link comportement">Phrases clés — Comportement</a>
+  <a href="#observer-diff" class="sidebar-link comportement">↳ Push vs Pull</a>
+  <a href="#dp-phrases" class="sidebar-link creation">Phrases clés — Création</a>
+  <a href="#factory-diff" class="sidebar-link creation">↳ Diff. entre Factories</a>
+  <a href="#quick-ref" class="sidebar-link">Tableau récapitulatif</a>
+
+  <div class="sidebar-section">SOLID</div>
+  <a href="#solid-resume" class="sidebar-link">Fiches SOLID</a>
+  <a href="#solid-liens" class="sidebar-link">SOLID × Design Patterns</a>
+</aside>
+
+<!-- MAIN -->
+<main class="main-content">
+  <h1 class="page-title">Résumé & Fiches Mémo</h1>
+  <p class="page-subtitle">Tout ce qu'il faut retenir en un coup d'œil — phrases clés, différences et liens entre patterns.</p>
+
+  <!-- STRUCTURE -->
+  <h2 class="section-title" id="dp-phrases-struct" style="margin-top:2.5rem">
+    <span class="category-badge badge-structure" style="font-size:0.65rem;padding:0.3rem 0.7rem;margin-right:0.75rem">Structure</span>
+    Patterns de Structure
+  </h2>
+
+  <div class="memo-grid">
+    <div class="memo-card structure">
+      <div class="memo-pattern-name structure">Composite</div>
+      <div class="memo-phrase">Le Composite organise des objets en arbre et permet de les traiter uniformément — une Box et un Produit répondent tous les deux à <code>getPrice()</code>.</div>
+      <div class="memo-keyphrase">💡 Le Client appelle une méthode sur la racine — la récursivité descend et remonte en accumulant.</div>
+    </div>
+
+    <div class="memo-card structure">
+      <div class="memo-pattern-name structure">Décorateur</div>
+      <div class="memo-phrase">Le Décorateur enveloppe un objet dans une série de "poupées russes" qui ajoutent chacune une fonctionnalité — sans exploser en 2ᴺ sous-classes.</div>
+      <div class="memo-keyphrase">💡 Le Décorateur hérite ET contient le ComposantAbstrait — pour être interchangeable et pour déléguer.</div>
+    </div>
+  </div>
+
+  <div class="pattern-card structure" style="margin-top:1rem">
+    <h4 style="font-size:0.9rem;margin-bottom:0.75rem;color:var(--structure)">Composite vs Décorateur — la différence clé</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div style="background:var(--surface2);border-radius:8px;padding:1rem">
+        <div style="font-weight:600;margin-bottom:0.5rem;color:var(--structure)">Composite</div>
+        <div style="color:var(--text2);font-size:0.85rem;line-height:1.6">Structure en <strong style="color:var(--text)">arbre 1→N</strong>. Un nœud contient plusieurs enfants. But : traitement <strong style="color:var(--text)">uniforme</strong> des feuilles et composés.</div>
+      </div>
+      <div style="background:var(--surface2);border-radius:8px;padding:1rem">
+        <div style="font-weight:600;margin-bottom:0.5rem;color:var(--structure)">Décorateur</div>
+        <div style="color:var(--text2);font-size:0.85rem;line-height:1.6">Chaîne <strong style="color:var(--text)">linéaire 1→1</strong>. Chaque enveloppe contient un seul objet. But : <strong style="color:var(--text)">ajout de responsabilités</strong> dynamiquement.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPORTEMENT -->
+  <h2 class="section-title" id="dp-phrases-comp" style="margin-top:2.5rem">
+    <span class="category-badge badge-comportement" style="font-size:0.65rem;padding:0.3rem 0.7rem;margin-right:0.75rem">Comportement</span>
+    Patterns de Comportement
+  </h2>
+
+  <div class="memo-grid">
+    <div class="memo-card comportement">
+      <div class="memo-pattern-name comportement">Strategy</div>
+      <div class="memo-phrase">Le Strategy choisit <em>comment</em> faire quelque chose — un algorithme parmi plusieurs, interchangeable à la volée sans modifier le Context.</div>
+      <div class="memo-keyphrase">💡 Le Context délègue sans savoir quel algorithme s'exécute — c'est le Client qui choisit.</div>
+    </div>
+
+    <div class="memo-card comportement">
+      <div class="memo-pattern-name comportement">Observer Push</div>
+      <div class="memo-phrase">L'Observer Push notifie ses abonnés en leur <em>envoyant</em> directement les données — l'observateur n'a rien à demander, il reçoit tout dans l'appel.</div>
+      <div class="memo-keyphrase">💡 En Push, le Sujet envoie tout dans actualise(données) — direct et simple.</div>
+    </div>
+
+    <div class="memo-card comportement">
+      <div class="memo-pattern-name comportement">Observer Pull</div>
+      <div class="memo-phrase">L'Observer Pull signale juste "j'ai changé" — chaque observateur <em>va chercher</em> lui-même les données dont il a besoin via getEtat().</div>
+      <div class="memo-keyphrase">💡 En Pull, le Sujet dit "quelque chose a changé", l'Observateur choisit ce qu'il veut récupérer.</div>
+    </div>
+  </div>
+
+  <!-- PUSH VS PULL DIFF -->
+  <div class="pattern-card comportement" id="observer-diff" style="margin-top:1rem">
+    <h3 style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:1rem;color:var(--comportement)">↳ Observer Push vs Pull — différences détaillées</h3>
+    <div class="pushpull-grid">
+      <div class="pushpull-card">
+        <h4>Mode Push</h4>
+        <ul>
+          <li><strong>Signature :</strong> actualise(<em>données</em>)</li>
+          <li><strong>Données :</strong> envoyées par le Sujet dans l'appel</li>
+          <li><strong>Référence sujet :</strong> non nécessaire</li>
+          <li><strong>Avantage :</strong> simple, direct, moins couplé</li>
+          <li><strong>Inconvénient :</strong> envoie potentiellement des données inutiles à certains observateurs</li>
+          <li><strong>Exemple :</strong> <code>JeanMichel.actualise("forte pluie")</code></li>
+        </ul>
+      </div>
+      <div class="pushpull-card">
+        <h4>Mode Pull</h4>
+        <ul>
+          <li><strong>Signature :</strong> actualise() — vide</li>
+          <li><strong>Données :</strong> l'Observateur les récupère via getEtat()</li>
+          <li><strong>Référence sujet :</strong> ObservConcret → SujetConcret (association)</li>
+          <li><strong>Avantage :</strong> l'observateur prend uniquement ce dont il a besoin</li>
+          <li><strong>Inconvénient :</strong> couplage plus fort (connaît SujetConcret)</li>
+          <li><strong>Exemple :</strong> <code>actualise() { orageux.getEtat(); }</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK REF TABLE -->
+  <!-- DP CREATION -->
+  <h2 class="section-title" id="dp-phrases">
+    <span class="category-badge badge-creation" style="font-size:0.65rem;padding:0.3rem 0.7rem;margin-right:0.75rem">Création</span>
+    Patterns de Création
+  </h2>
+
+  <div class="memo-grid">
+    <div class="memo-card creation">
+      <div class="memo-pattern-name creation">Simple Factory</div>
+      <div class="memo-phrase">La Simple Factory choisit <em>quoi créer</em> selon un paramètre, mais elle connaît tous les produits et viole Open/Closed si on en ajoute un.</div>
+      <div class="memo-keyphrase">💡 La Fabrique connaît tous les produits, le Client ne connaît que l'interface.</div>
+    </div>
+
+    <div class="memo-card creation">
+      <div class="memo-pattern-name creation">Factory Method</div>
+      <div class="memo-phrase">Le Factory Method délègue la création aux sous-classes — chaque CréateurConcret sait créer son propre produit, sans toucher au code existant.</div>
+      <div class="memo-keyphrase">💡 Chaque CréateurConcret crée ses produits — ajouter une pizzeria ne touche à rien d'existant.</div>
+    </div>
+
+    <div class="memo-card creation">
+      <div class="memo-pattern-name creation">Abstract Factory</div>
+      <div class="memo-phrase">L'Abstract Factory garantit qu'une famille d'objets cohérents est créée ensemble — une fabrique italienne ne mélange jamais des ingrédients belges.</div>
+      <div class="memo-keyphrase">💡 L'Abstract Factory garantit la cohérence d'une famille — une fabrique = une origine.</div>
+    </div>
+
+    <div class="memo-card creation">
+      <div class="memo-pattern-name creation">Builder</div>
+      <div class="memo-phrase">Le Builder construit un objet complexe étape par étape — le Directeur orchestre l'ordre, le BuilderConcret sait comment réaliser chaque étape.</div>
+      <div class="memo-keyphrase">💡 Le Directeur connaît l'ordre des étapes, le BuilderConcret connaît comment les réaliser.</div>
+    </div>
+  </div>
+
+  <!-- FACTORY COMPARISON -->
+  <div class="pattern-card creation" id="factory-diff" style="margin-top:1.5rem">
+    <h3 style="font-family:'DM Serif Display',serif;font-size:1.3rem;margin-bottom:1rem;color:var(--creation)">↳ Différences entre les 3 patterns Factory</h3>
+    <p style="color:var(--text2);font-size:0.9rem;margin-bottom:1.25rem">Ces trois patterns répondent tous à "comment créer des objets proprement" mais à des niveaux de complexité différents :</p>
+
+    <table class="factory-table">
+      <thead>
+        <tr>
+          <th>Pattern</th>
+          <th>Qui crée ?</th>
+          <th>Ce qu'il crée</th>
+          <th>Open/Closed ?</th>
+          <th>Mot clé</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Simple Factory</td>
+          <td>Une classe unique avec <code>if/else</code></td>
+          <td>Un seul type de produit</td>
+          <td style="color:var(--accent2)">❌ Violé</td>
+          <td>Centralisation</td>
+        </tr>
+        <tr>
+          <td>Factory Method</td>
+          <td>Chaque CréateurConcret</td>
+          <td>Son propre produit</td>
+          <td style="color:var(--accent3)">✅ Respecté</td>
+          <td>Délégation</td>
+        </tr>
+        <tr>
+          <td>Abstract Factory</td>
+          <td>Chaque FabriqueConcrete</td>
+          <td>Une famille cohérente de produits</td>
+          <td style="color:var(--accent3)">✅ Respecté</td>
+          <td>Famille</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-top:1rem">
+      <div style="background:var(--surface2);border-radius:8px;padding:1rem;border-top:2px solid var(--creation)">
+        <div style="font-weight:600;margin-bottom:0.4rem;font-size:0.85rem">Simple Factory</div>
+        <div style="color:var(--text2);font-size:0.8rem;line-height:1.5">Une Fabrique, un <code>if/else</code> géant. Facile à comprendre, difficile à étendre.</div>
+      </div>
+      <div style="background:var(--surface2);border-radius:8px;padding:1rem;border-top:2px solid var(--creation)">
+        <div style="font-weight:600;margin-bottom:0.4rem;font-size:0.85rem">Factory Method</div>
+        <div style="color:var(--text2);font-size:0.8rem;line-height:1.5">Chaque contexte (pizzeria) a sa propre sous-classe. Extensible horizontalement.</div>
+      </div>
+      <div style="background:var(--surface2);border-radius:8px;padding:1rem;border-top:2px solid var(--creation)">
+        <div style="font-weight:600;margin-bottom:0.4rem;font-size:0.85rem">Abstract Factory</div>
+        <div style="color:var(--text2);font-size:0.8rem;line-height:1.5">Quand les produits vont ensemble (Pâte + Sauce + Fromage). Garantit la cohérence.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quick-ref" id="quick-ref" style="margin-top:2rem">
+    <div class="quick-ref-header">Tableau récapitulatif — tous les Design Patterns</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Pattern</th>
+          <th>Catégorie</th>
+          <th>En une phrase</th>
+          <th>Participants clés</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tag-creation">Simple Factory</td>
+          <td><span class="category-badge badge-creation" style="font-size:0.6rem;padding:0.15rem 0.5rem">Création</span></td>
+          <td>Une fabrique centralise la création — viole Open/Closed</td>
+          <td>Produit, Fabrique, Client</td>
+        </tr>
+        <tr>
+          <td class="tag-creation">Factory Method</td>
+          <td><span class="category-badge badge-creation" style="font-size:0.6rem;padding:0.15rem 0.5rem">Création</span></td>
+          <td>Chaque sous-classe crée son propre produit</td>
+          <td>Créateur, CréateurConcret, Produit</td>
+        </tr>
+        <tr>
+          <td class="tag-creation">Abstract Factory</td>
+          <td><span class="category-badge badge-creation" style="font-size:0.6rem;padding:0.15rem 0.5rem">Création</span></td>
+          <td>Chaque fabrique crée une famille cohérente de produits</td>
+          <td>FabriqueAbstraite, FabriqueConcrete, Famille de Produits</td>
+        </tr>
+        <tr>
+          <td class="tag-creation">Builder</td>
+          <td><span class="category-badge badge-creation" style="font-size:0.6rem;padding:0.15rem 0.5rem">Création</span></td>
+          <td>Construction étape par étape — Directeur orchestre, Builder réalise</td>
+          <td>Builder, BuilderConcret, Directeur, Produit</td>
+        </tr>
+        <tr>
+          <td class="tag-structure">Composite</td>
+          <td><span class="category-badge badge-structure" style="font-size:0.6rem;padding:0.15rem 0.5rem">Structure</span></td>
+          <td>Arbre d'objets traités uniformément (feuille ou composé)</td>
+          <td>Composant, Feuille, Composé, Client</td>
+        </tr>
+        <tr>
+          <td class="tag-structure">Décorateur</td>
+          <td><span class="category-badge badge-structure" style="font-size:0.6rem;padding:0.15rem 0.5rem">Structure</span></td>
+          <td>Poupées russes — chaque enveloppe ajoute une responsabilité</td>
+          <td>ComposantAbstrait, ComposantConcret, Décorateur, DécorateurConcret</td>
+        </tr>
+        <tr>
+          <td class="tag-comportement">Strategy</td>
+          <td><span class="category-badge badge-comportement" style="font-size:0.6rem;padding:0.15rem 0.5rem">Comportement</span></td>
+          <td>Algorithme interchangeable — le client choisit, le Context délègue</td>
+          <td>Strategy, ConcreteStrategy, Context, Client</td>
+        </tr>
+        <tr>
+          <td class="tag-comportement">Observer Push</td>
+          <td><span class="category-badge badge-comportement" style="font-size:0.6rem;padding:0.15rem 0.5rem">Comportement</span></td>
+          <td>Le Sujet envoie les données dans actualise(données)</td>
+          <td>Sujet, SujetConcret, Observateur, ObservConcret</td>
+        </tr>
+        <tr>
+          <td class="tag-comportement">Observer Pull</td>
+          <td><span class="category-badge badge-comportement" style="font-size:0.6rem;padding:0.15rem 0.5rem">Comportement</span></td>
+          <td>actualise() vide — l'Observateur va chercher via getEtat()</td>
+          <td>Sujet, SujetConcret, Observateur, ObservConcret + référence</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SOLID RESUME -->
+  <h2 class="section-title" id="solid-resume" style="margin-top:3rem">Principes SOLID — Fiches mémo</h2>
+
+  <div class="solid-summary-grid">
+    <div class="solid-summary-card">
+      <div class="solid-big-letter">S</div>
+      <div class="solid-summary-content">
+        <div class="solid-summary-name">Single Responsibility</div>
+        <div class="solid-summary-full">Responsabilité unique</div>
+        <div class="solid-summary-phrase">Une classe ne fait qu'une chose — elle n'a qu'une seule raison de changer.</div>
+        <div class="solid-summary-keyphrase">💡 Une classe = une responsabilité = une seule raison de changer.</div>
+      </div>
+    </div>
+
+    <div class="solid-summary-card">
+      <div class="solid-big-letter">O</div>
+      <div class="solid-summary-content">
+        <div class="solid-summary-name">Open/Closed</div>
+        <div class="solid-summary-full">Ouvert/Fermé</div>
+        <div class="solid-summary-phrase">On ajoute du comportement en créant de nouvelles classes, jamais en modifiant celles qui existent.</div>
+        <div class="solid-summary-keyphrase">💡 Ouverte à l'extension (nouvelles classes), fermée à la modification.</div>
+      </div>
+    </div>
+
+    <div class="solid-summary-card">
+      <div class="solid-big-letter">L</div>
+      <div class="solid-summary-content">
+        <div class="solid-summary-name">Liskov Substitution</div>
+        <div class="solid-summary-full">Substitution de Liskov</div>
+        <div class="solid-summary-phrase">Une sous-classe peut toujours remplacer sa classe parente — sans surprises, sans comportement cassé.</div>
+        <div class="solid-summary-keyphrase">💡 Si ça marche avec A, ça doit marcher avec B extends A.</div>
+      </div>
+    </div>
+
+    <div class="solid-summary-card">
+      <div class="solid-big-letter">I</div>
+      <div class="solid-summary-content">
+        <div class="solid-summary-name">Interface Segregation</div>
+        <div class="solid-summary-full">Ségrégation des interfaces</div>
+        <div class="solid-summary-phrase">Mieux vaut plusieurs petites interfaces spécialisées qu'une grande interface fourre-tout.</div>
+        <div class="solid-summary-keyphrase">💡 Un Robot ne devrait pas implémenter manger() et dormir().</div>
+      </div>
+    </div>
+
+    <div class="solid-summary-card">
+      <div class="solid-big-letter">D</div>
+      <div class="solid-summary-content">
+        <div class="solid-summary-name">Dependency Inversion</div>
+        <div class="solid-summary-full">Inversion des dépendances</div>
+        <div class="solid-summary-phrase">Dépendre d'abstractions (interfaces), jamais de classes concrètes — c'est la base de la flexibilité.</div>
+        <div class="solid-summary-keyphrase">💡 Programme vers une interface, pas une implémentation.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLID × DP LIENS -->
+  <div class="pattern-card" id="solid-liens" style="margin-top:1.5rem;border-left:3px solid var(--accent)">
+    <h3 style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:1rem">SOLID × Design Patterns — les liens</h3>
+    <p style="color:var(--text2);font-size:0.9rem;margin-bottom:1rem">Les Design Patterns sont souvent des applications concrètes des principes SOLID :</p>
+    <table class="participants-table">
+      <tr><th>Principe</th><th>Design Pattern qui le respecte</th><th>Pourquoi</th></tr>
+      <tr>
+        <td>OCP</td>
+        <td>Factory Method, Strategy, Observer</td>
+        <td>Ajouter un produit/algorithme/observateur = nouvelle classe, code existant intact</td>
+      </tr>
+      <tr>
+        <td>DIP</td>
+        <td>Tous (Strategy, Observer, Factory Method, Abstract Factory)</td>
+        <td>On code vers des interfaces (Strategy, Observateur, Produit) jamais vers du concret (Visa, JeanMichel, Margherita)</td>
+      </tr>
+      <tr>
+        <td>SRP</td>
+        <td>Strategy, Builder</td>
+        <td>Strategy : chaque algorithme dans sa classe. Builder : le Directeur orchestre, le Builder construit</td>
+      </tr>
+      <tr>
+        <td>LSP</td>
+        <td>Composite, Décorateur</td>
+        <td>Feuille et Composé sont interchangeables via Composant. DécorateurConcret remplace ComposantConcret</td>
+      </tr>
+      <tr>
+        <td>ISP</td>
+        <td>Abstract Factory</td>
+        <td>Plusieurs interfaces produit spécialisées (Pate, Sauce, Fromage) plutôt qu'une seule interface Ingredient</td>
+      </tr>
+    </table>
+  </div>
+
+</main>
+</div>
+
+<script>
+const sections = document.querySelectorAll('[id]');
+const links = document.querySelectorAll('.sidebar-link');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  links.forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+  });
+});
+</script>
+</body>
+</html>

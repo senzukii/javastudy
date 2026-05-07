@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Principes SOLID — Java Study</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.solid-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  scroll-margin-top: 2rem;
+}
+.solid-letter {
+  font-family: 'DM Serif Display', serif;
+  font-size: 4rem;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.solid-card:nth-child(1) .solid-letter { color: #7c6fff; }
+.solid-card:nth-child(2) .solid-letter { color: #43e97b; }
+.solid-card:nth-child(3) .solid-letter { color: #f7971e; }
+.solid-card:nth-child(4) .solid-letter { color: #ff6b6b; }
+.solid-card:nth-child(5) .solid-letter { color: #38bdf8; }
+.solid-name { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.25rem; }
+.solid-full { color: var(--text2); font-size: 0.9rem; margin-bottom: 1.5rem; font-family: 'DM Mono', monospace; }
+.code-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.code-bad { border-top: 2px solid var(--accent2); }
+.code-good { border-top: 2px solid var(--accent3); }
+.code-label {
+  font-size: 0.7rem;
+  font-family: 'DM Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.5rem 1rem 0;
+  background: var(--surface2);
+  border-radius: 0 0 0 0;
+}
+.code-bad .code-label { color: var(--accent2); }
+.code-good .code-label { color: var(--accent3); }
+@media (max-width: 900px) { .code-compare { grid-template-columns: 1fr; } }
+.sidebar-nav-home {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1.5rem; color: var(--text3);
+  text-decoration: none; font-size: 0.8rem;
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 0.5rem; transition: color 0.2s;
+}
+.sidebar-nav-home:hover { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="page-wrapper">
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a href="index.html">⬡ Java Study Guide</a>
+    <span>Principes SOLID</span>
+  </div>
+  <a href="index.html" class="sidebar-nav-home">← Accueil</a>
+  <div class="sidebar-section">Les 5 principes</div>
+  <a href="#srp" class="sidebar-link">S — Single Responsibility</a>
+  <a href="#ocp" class="sidebar-link">O — Open/Closed</a>
+  <a href="#lsp" class="sidebar-link">L — Liskov Substitution</a>
+  <a href="#isp" class="sidebar-link">I — Interface Segregation</a>
+  <a href="#dip" class="sidebar-link">D — Dependency Inversion</a>
+</aside>
+
+<main class="main-content">
+  <h1 class="page-title">Principes SOLID</h1>
+  <p class="page-subtitle">Les 5 principes fondamentaux de la conception orientée objet — pour un code maintenable, extensible et robuste.</p>
+
+  <!-- SRP -->
+  <div class="solid-card" id="srp">
+    <span class="solid-letter">S</span>
+    <div class="solid-name">Single Responsibility Principle</div>
+    <div class="solid-full">Principe de responsabilité unique</div>
+
+    <div class="definition-box">"Une classe ne doit avoir qu'une seule raison de changer."</div>
+
+    <p style="color:var(--text2);margin:1rem 0">Chaque classe doit avoir <strong style="color:var(--text)">une seule responsabilité</strong>. Si une classe fait trop de choses, elle devient fragile — modifier une fonctionnalité risque d'en casser une autre.</p>
+
+    <div class="code-compare">
+      <div>
+        <div class="code-bad">
+          <div class="code-label">❌ Violation SRP</div>
+          <pre>public class Employe {
+  // Responsabilité 1 : données
+  private String nom;
+  private double salaire;
+
+  // Responsabilité 2 : calcul
+  public double calculerSalaire() { ... }
+
+  // Responsabilité 3 : persistance
+  public void sauvegarderEnBDD() { ... }
+
+  // Responsabilité 4 : rapport
+  public String genererRapport() { ... }
+  // → 4 raisons de changer !</pre>
+        </div>
+      </div>
+      <div>
+        <div class="code-good">
+          <div class="code-label">✅ Respect SRP</div>
+          <pre>public class Employe {
+  private String nom;
+  private double salaire;
+}
+
+public class CalculateurSalaire {
+  public double calculer(Employe e) { ... }
+}
+
+public class EmployeRepository {
+  public void sauvegarder(Employe e) { ... }
+}
+
+public class RapportEmploye {
+  public String generer(Employe e) { ... }
+}
+// → chaque classe = 1 raison de changer</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Pourquoi c'est important</h4>
+      Une classe avec une seule responsabilité est plus facile à tester, à modifier et à comprendre. Si le mode de calcul du salaire change, seul <code>CalculateurSalaire</code> est modifié — pas le reste.
+    </div>
+
+    <div class="keyphrase">Une classe = une responsabilité = une seule raison de changer.</div>
+  </div>
+
+  <!-- OCP -->
+  <div class="solid-card" id="ocp">
+    <span class="solid-letter">O</span>
+    <div class="solid-name">Open/Closed Principle</div>
+    <div class="solid-full">Principe ouvert/fermé</div>
+
+    <div class="definition-box">"Une classe doit être ouverte à l'extension mais fermée à la modification."</div>
+
+    <p style="color:var(--text2);margin:1rem 0">On doit pouvoir <strong style="color:var(--text)">ajouter de nouvelles fonctionnalités sans modifier le code existant</strong>. On étend via l'héritage ou la composition — pas en changeant ce qui marche déjà.</p>
+
+    <div class="code-compare">
+      <div>
+        <div class="code-bad">
+          <div class="code-label">❌ Violation OCP</div>
+          <pre>public class Calculateur {
+  public double calculerPrime(Employe e) {
+    if (e.getType() == "dev") {
+      return e.getSalaire() * 0.1;
+    } else if (e.getType() == "manager") {
+      return e.getSalaire() * 0.2;
+    }
+    // Ajouter un type = modifier ici !
+  }
+}</pre>
+        </div>
+      </div>
+      <div>
+        <div class="code-good">
+          <div class="code-label">✅ Respect OCP</div>
+          <pre>public interface CalculateurPrime {
+  double calculer(Employe e);
+}
+
+public class PrimeDev implements CalculateurPrime {
+  public double calculer(Employe e) {
+    return e.getSalaire() * 0.1;
+  }
+}
+
+public class PrimeManager implements CalculateurPrime {
+  public double calculer(Employe e) {
+    return e.getSalaire() * 0.2;
+  }
+}
+// Ajouter un type = nouvelle classe !</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Lien avec les Design Patterns</h4>
+      C'est exactement ce que respectent <strong>Factory Method</strong> (ajouter un créateur sans modifier la hiérarchie), <strong>Strategy</strong> (ajouter un algorithme sans modifier le Context) et <strong>Observer</strong> (ajouter un observateur sans modifier le Sujet).
+    </div>
+
+    <div class="keyphrase">Ouverte à l'extension (nouvelles classes), fermée à la modification (code existant intouché).</div>
+  </div>
+
+  <!-- LSP -->
+  <div class="solid-card" id="lsp">
+    <span class="solid-letter">L</span>
+    <div class="solid-name">Liskov Substitution Principle</div>
+    <div class="solid-full">Principe de substitution de Liskov</div>
+
+    <div class="definition-box">"Les objets d'une classe dérivée doivent pouvoir remplacer les objets de la classe de base sans altérer le bon fonctionnement du programme."</div>
+
+    <p style="color:var(--text2);margin:1rem 0">Si <code>B</code> hérite de <code>A</code>, alors partout où on utilise <code>A</code>, on doit pouvoir utiliser <code>B</code> sans que ça plante. La sous-classe ne doit pas <strong style="color:var(--text)">affaiblir les garanties</strong> de la classe parente.</p>
+
+    <div class="code-compare">
+      <div>
+        <div class="code-bad">
+          <div class="code-label">❌ Violation LSP</div>
+          <pre>public class Rectangle {
+  protected int largeur, hauteur;
+  public void setLargeur(int l) { largeur = l; }
+  public void setHauteur(int h) { hauteur = h; }
+  public int getSurface() { return largeur * hauteur; }
+}
+
+public class Carre extends Rectangle {
+  // Problème : un carré doit avoir largeur = hauteur
+  public void setLargeur(int l) {
+    largeur = hauteur = l; // casse le comportement !
+  }
+}
+// rectangle.setLargeur(5); rectangle.setHauteur(4);
+// Si c'est un Carré → surface = 16, pas 20 !</pre>
+        </div>
+      </div>
+      <div>
+        <div class="code-good">
+          <div class="code-label">✅ Respect LSP</div>
+          <pre>public interface Forme {
+  int getSurface();
+}
+
+public class Rectangle implements Forme {
+  private int largeur, hauteur;
+  public int getSurface() {
+    return largeur * hauteur;
+  }
+}
+
+public class Carre implements Forme {
+  private int cote;
+  public int getSurface() {
+    return cote * cote;
+  }
+}
+// Pas d'héritage problématique !</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="problem-box">
+      <h4>⚠️ Comment détecter une violation LSP</h4>
+      Si tu dois écrire des <code>instanceof</code> ou des <code>if</code> pour vérifier le type réel d'un objet avant de l'utiliser, tu violes probablement LSP. La sous-classe ne peut pas être substituée tranquillement.
+    </div>
+
+    <div class="keyphrase">Une sous-classe peut toujours remplacer sa classe parente sans surprises — le comportement attendu est préservé.</div>
+  </div>
+
+  <!-- ISP -->
+  <div class="solid-card" id="isp">
+    <span class="solid-letter">I</span>
+    <div class="solid-name">Interface Segregation Principle</div>
+    <div class="solid-full">Principe de ségrégation des interfaces</div>
+
+    <div class="definition-box">"Un client ne doit pas être forcé de dépendre d'interfaces qu'il n'utilise pas."</div>
+
+    <p style="color:var(--text2);margin:1rem 0">Mieux vaut avoir <strong style="color:var(--text)">plusieurs petites interfaces spécialisées</strong> qu'une grande interface généraliste. Une classe ne devrait pas être obligée d'implémenter des méthodes qu'elle n'utilise pas.</p>
+
+    <div class="code-compare">
+      <div>
+        <div class="code-bad">
+          <div class="code-label">❌ Violation ISP</div>
+          <pre>public interface Travailleur {
+  void travailler();
+  void manger();
+  void dormir();
+}
+
+// Un Robot doit implémenter manger() et dormir()
+// alors qu'il ne mange ni ne dort !
+public class Robot implements Travailleur {
+  public void travailler() { /* ok */ }
+  public void manger() { /* ??? */ }
+  public void dormir() { /* ??? */ }
+}</pre>
+        </div>
+      </div>
+      <div>
+        <div class="code-good">
+          <div class="code-label">✅ Respect ISP</div>
+          <pre>public interface Travailleur {
+  void travailler();
+}
+
+public interface EtreVivant {
+  void manger();
+  void dormir();
+}
+
+public class Humain
+    implements Travailleur, EtreVivant {
+  public void travailler() { ... }
+  public void manger() { ... }
+  public void dormir() { ... }
+}
+
+public class Robot implements Travailleur {
+  public void travailler() { ... }
+  // Pas forcé d'implémenter manger/dormir
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Pourquoi c'est important</h4>
+      Des interfaces petites et cohérentes rendent le code plus flexible. On peut combiner les interfaces nécessaires sans être contraint par des méthodes inutiles.
+    </div>
+
+    <div class="keyphrase">Plusieurs interfaces spécialisées valent mieux qu'une interface fourre-tout — chaque classe n'implémente que ce dont elle a besoin.</div>
+  </div>
+
+  <!-- DIP -->
+  <div class="solid-card" id="dip">
+    <span class="solid-letter">D</span>
+    <div class="solid-name">Dependency Inversion Principle</div>
+    <div class="solid-full">Principe d'inversion des dépendances</div>
+
+    <div class="definition-box">"Les modules de haut niveau ne doivent pas dépendre des modules de bas niveau. Les deux doivent dépendre d'abstractions. Les abstractions ne doivent pas dépendre des détails. Les détails doivent dépendre des abstractions."</div>
+
+    <p style="color:var(--text2);margin:1rem 0">En clair : dépendre d'<strong style="color:var(--text)">interfaces</strong>, pas de classes concrètes. Le code de haut niveau (la logique métier) ne doit pas connaître les détails d'implémentation.</p>
+
+    <div class="code-compare">
+      <div>
+        <div class="code-bad">
+          <div class="code-label">❌ Violation DIP</div>
+          <pre>// Module haut niveau dépend du bas niveau
+public class ServiceCommande {
+  // Dépend directement de la classe concrète !
+  private MySQLDatabase db = new MySQLDatabase();
+
+  public void passerCommande(Commande c) {
+    db.sauvegarder(c);
+  }
+}
+// Changer de BDD → modifier ServiceCommande !</pre>
+        </div>
+      </div>
+      <div>
+        <div class="code-good">
+          <div class="code-label">✅ Respect DIP</div>
+          <pre>// Abstraction
+public interface Database {
+  void sauvegarder(Commande c);
+}
+
+// Module haut niveau dépend de l'abstraction
+public class ServiceCommande {
+  private Database db; // interface !
+
+  public ServiceCommande(Database db) {
+    this.db = db; // injection de dépendance
+  }
+
+  public void passerCommande(Commande c) {
+    db.sauvegarder(c);
+  }
+}
+// Changer de BDD → juste une nouvelle classe</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Lien avec les Design Patterns</h4>
+      La plupart des Design Patterns respectent DIP — le <strong>Strategy</strong> dépend de l'interface Strategy (pas de Visa ou Bancontact), le <strong>Observer</strong> dépend de l'interface Observateur (pas de JeanMichel), l'<strong>Abstract Factory</strong> dépend des interfaces produit (pas des classes concrètes).
+    </div>
+
+    <div class="keyphrase">Dépendre d'abstractions (interfaces), jamais de classes concrètes — c'est la base de la flexibilité en POO.</div>
+  </div>
+
+</main>
+</div>
+
+<script>
+const sections = document.querySelectorAll('[id]');
+const links = document.querySelectorAll('.sidebar-link');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  links.forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+  });
+});
+</script>
+</body>
+</html>
