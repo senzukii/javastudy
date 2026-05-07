@@ -178,6 +178,18 @@
   }
   .hero-content { animation: fadeUp 0.8s ease both; }
   .nav-cards { animation: fadeUp 0.8s ease 0.2s both; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 1.5rem 1rem; }
+    .nav-cards { grid-template-columns: 1fr 1fr; }
+    .nav-card { padding: 1.25rem 1rem; }
+    .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .card-title { font-size: 1rem; }
+    .card-desc { font-size: 0.8rem; }
+  }
+  @media (max-width: 400px) {
+    .nav-cards { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>

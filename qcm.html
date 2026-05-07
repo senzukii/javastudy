@@ -138,10 +138,18 @@
   border: 1px solid var(--border);
   border-radius: 8px;
 }
+@media (max-width: 768px) {
+  .score-bar { flex-direction: column; align-items: flex-start; gap: 1rem; padding: 1rem; }
+  .btn-row { margin-left: 0; flex-wrap: wrap; }
+  .progress-track { width: 100%; }
+  .score-number { font-size: 1.8rem; }
+}
 </style>
 </head>
 <body>
 <div class="grid-bg"></div>
+<button class="menu-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+<div class="sidebar-overlay"></div>
 <div class="page-wrapper">
 
 <aside class="sidebar">
@@ -2055,5 +2063,6 @@ function resetAll() {
 // ─────────────────────────────────────────────
 newDraw();
 </script>
+<script src="shared.js"></script>
 </body>
 </html>

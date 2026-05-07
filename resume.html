@@ -207,6 +207,11 @@
 .tag-creation { color: var(--creation); }
 .tag-structure { color: var(--structure); }
 .tag-comportement { color: var(--comportement); }
+@media (max-width: 768px) {
+  .quick-ref { overflow-x: auto; border-radius: 12px; }
+  .quick-ref table { min-width: 560px; }
+  .pushpull-grid { grid-template-columns: 1fr; }
+}
 
 /* DIFF PUSH PULL */
 .pushpull-grid {
@@ -245,6 +250,8 @@
 </head>
 <body>
 <div class="grid-bg"></div>
+<button class="menu-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+<div class="sidebar-overlay"></div>
 <div class="page-wrapper">
 
 <!-- SIDEBAR -->
@@ -626,5 +633,6 @@ window.addEventListener('scroll', () => {
   });
 });
 </script>
+<script src="shared.js"></script>
 </body>
 </html>
