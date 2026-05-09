@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercices — Java Study</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ── Exercise card ── */
+.ex-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+  scroll-margin-top: 2rem;
+}
+.ex-card.creation    { border-left: 3px solid var(--creation); }
+.ex-card.structure   { border-left: 3px solid var(--structure); }
+.ex-card.comportement{ border-left: 3px solid var(--comportement); }
+
+.ex-header {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+}
+.ex-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.4rem;
+}
+.scenario-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+  color: var(--text3);
+  letter-spacing: 0.04em;
+}
+
+/* ── Section dividers ── */
+.ex-section { margin: 1.5rem 0 0; }
+.ex-section + .ex-section { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+
+.ex-section-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.ex-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.ex-section-title.impl { color: var(--accent5); }
+.ex-section-title.uml  { color: var(--accent4); }
+
+/* ── Code block with inline blanks ── */
+.code-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--text2);
+  line-height: 1.9;
+  margin: 0;
+  white-space: pre;
+  tab-size: 4;
+}
+
+.code-input {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+  background: rgba(124,111,255,0.1);
+  border: 1px dashed rgba(124,111,255,0.45);
+  border-radius: 4px;
+  color: var(--accent);
+  padding: 0 5px;
+  outline: none;
+  vertical-align: baseline;
+  line-height: 1.4;
+  transition: background 0.15s, border-color 0.15s;
+}
+.code-input:focus { background: rgba(124,111,255,0.18); border-style: solid; }
+.code-input.correct { background: rgba(67,233,123,0.1); border-color: rgba(67,233,123,0.5); border-style: solid; color: var(--accent3); }
+.code-input.wrong   { background: rgba(255,107,107,0.1); border-color: rgba(255,107,107,0.5); border-style: solid; color: var(--accent2); }
+.code-input:disabled { cursor: default; }
+
+/* ── UML block ── */
+.uml-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text2);
+  line-height: 1.8;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* ── UML blank rows ── */
+.blank-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+.blank-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+}
+.blank-num {
+  color: var(--accent4);
+  min-width: 1.6rem;
+  font-size: 0.9rem;
+}
+.blank-desc { color: var(--text3); font-size: 0.72rem; }
+.uml-input {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+  background: rgba(247,151,30,0.08);
+  border: 1px dashed rgba(247,151,30,0.45);
+  border-radius: 4px;
+  color: var(--accent4);
+  padding: 2px 8px;
+  outline: none;
+  width: 16ch;
+  transition: background 0.15s;
+}
+.uml-input:focus { background: rgba(247,151,30,0.15); border-style: solid; }
+.uml-input.correct { background: rgba(67,233,123,0.1); border-color: rgba(67,233,123,0.5); border-style: solid; color: var(--accent3); }
+.uml-input.wrong   { background: rgba(255,107,107,0.1); border-color: rgba(255,107,107,0.5); border-style: solid; color: var(--accent2); }
+.uml-input:disabled { cursor: default; }
+
+/* ── Actions ── */
+.ex-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+.btn-check {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  padding: 0.45rem 1.1rem;
+  border-radius: 7px;
+  border: 1px solid var(--accent);
+  background: rgba(124,111,255,0.1);
+  color: var(--accent);
+  cursor: pointer;
+  transition: background 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.btn-check:hover { background: rgba(124,111,255,0.2); }
+.btn-reveal {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  padding: 0.45rem 1.1rem;
+  border-radius: 7px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text3);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.btn-reveal:hover { color: var(--text2); border-color: var(--border2); }
+.btn-reset {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text3);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.btn-reset:hover { color: var(--text2); }
+
+.score-msg {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 5px;
+  display: none;
+}
+.score-msg.visible     { display: inline-block; }
+.score-msg.all-correct { background: rgba(67,233,123,0.1); color: var(--accent3); border: 1px solid rgba(67,233,123,0.3); }
+.score-msg.partial     { background: rgba(247,151,30,0.1); color: var(--accent4); border: 1px solid rgba(247,151,30,0.3); }
+.score-msg.none-correct{ background: rgba(255,107,107,0.1); color: var(--accent2); border: 1px solid rgba(255,107,107,0.3); }
+
+/* ── Diff highlight box ── */
+.diff-box {
+  background: rgba(56,189,248,0.06);
+  border: 1px solid rgba(56,189,248,0.2);
+  border-left: 3px solid var(--accent5);
+  border-radius: 0 8px 8px 0;
+  padding: 0.75rem 1rem;
+  margin-top: 1rem;
+  font-size: 0.82rem;
+  color: var(--text2);
+  font-family: 'DM Mono', monospace;
+}
+.diff-box strong { color: var(--accent5); }
+
+@media (max-width: 768px) {
+  .ex-card { padding: 1.25rem; }
+  .code-block, .uml-block { font-size: 0.72rem; padding: 1rem; }
+  .blank-row { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<button class="menu-toggle" aria-label="Menu">
+  <span></span><span></span><span></span>
+</button>
+<div class="sidebar-overlay"></div>
+
+<div class="page-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <a href="index.html">Java Design Patterns</a>
+      <span>Guide d'étude</span>
+    </div>
+    <div class="sidebar-section">Navigation</div>
+    <a href="design-patterns.html" class="sidebar-link">Fiches théoriques</a>
+    <a href="qcm.html" class="sidebar-link">QCM</a>
+    <a href="exercices.html" class="sidebar-link active">Exercices</a>
+    <a href="resume.html" class="sidebar-link">Résumé</a>
+
+    <div class="sidebar-section">Création</div>
+    <a href="#simple-factory"   class="sidebar-link creation">Simple Factory</a>
+    <a href="#factory-method"   class="sidebar-link creation">Factory Method</a>
+    <a href="#abstract-factory" class="sidebar-link creation">Abstract Factory</a>
+    <a href="#builder"          class="sidebar-link creation">Builder</a>
+
+    <div class="sidebar-section">Structure</div>
+    <a href="#composite"  class="sidebar-link structure">Composite</a>
+    <a href="#decorateur" class="sidebar-link structure">Décorateur</a>
+
+    <div class="sidebar-section">Comportement</div>
+    <a href="#strategy"     class="sidebar-link comportement">Strategy</a>
+    <a href="#observer-push" class="sidebar-link comportement">Observer Push</a>
+    <a href="#observer-pull" class="sidebar-link comportement">Observer Pull</a>
+  </nav>
+
+  <main class="main-content">
+    <h1 class="page-title">Exercices</h1>
+    <p class="page-subtitle">Code à trous · Diagrammes UML · Validation immédiate</p>
+
+    <!-- ═══════════════════════════════════════
+         CRÉATION
+    ═══════════════════════════════════════ -->
+    <div class="category-header">
+      <span class="section-title" style="padding-top:0;font-size:1.4rem">Création</span>
+      <span class="category-badge badge-creation">Creational Patterns</span>
+    </div>
+
+    <!-- ── SIMPLE FACTORY ── -->
+    <div class="ex-card creation" id="simple-factory">
+      <div class="ex-header">
+        <span class="ex-title">Simple Factory</span>
+        <span class="scenario-badge">Scénario : Garage de véhicules</span>
+        <span class="category-badge badge-creation">Création</span>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title impl">Implémentation Java</div>
+<pre class="code-block">interface Vehicule {
+    void demarrer();
+}
+
+class Voiture <input class="code-input" data-ex="sf" data-answer="implements" style="width:10ch"> Vehicule {
+    public void demarrer() { System.out.println("Vroooom"); }
+}
+class Moto implements Vehicule {
+    public void demarrer() { System.out.println("Pétarade"); }
+}
+
+class FabriqueVehicule {
+    // Méthode statique — pas d'instance de FabriqueVehicule nécessaire
+    public <input class="code-input" data-ex="sf" data-answer="static" style="width:6ch"> Vehicule creer(String type) {
+        switch (type) {
+            case "voiture": return new <input class="code-input" data-ex="sf" data-answer="Voiture" style="width:7ch">();
+            case "moto"   : return new Moto();
+            default: throw new IllegalArgumentException("Type inconnu: " + type);
+        }
+    }
+}
+
+// Utilisation — appel statique, sans new FabriqueVehicule()
+Vehicule v = FabriqueVehicule.<input class="code-input" data-ex="sf" data-answer="creer" style="width:5ch">("voiture");
+v.demarrer(); // Vroooom</pre>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('sf')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('sf')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('sf')">↺</button>
+          <span class="score-msg" id="sf-score"></span>
+        </div>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title uml">Diagramme UML</div>
+        <div class="uml-block">
+  ┌────────────────────────────────┐
+  │        FabriqueVehicule        │
+  │  + ① creer(type): Vehicule     │
+  └────────────────┬───────────────┘
+                   │ «crée»
+                   ▼
+       ┌───────────────────┐
+       │  &lt;&lt;interface&gt;&gt;    │
+       │    ② Vehicule      │
+       │  + demarrer()     │
+       └─────────┬─────────┘
+                 │ ③
+        ┌────────┼────────┐
+        ▼        ▼        ▼
+     Voiture   Moto   Camion</div>
+        <div class="blank-rows">
+          <div class="blank-row">
+            <span class="blank-num">①</span>
+            <input class="uml-input" data-ex="sf-uml" data-answer="static" placeholder="...">
+            <span class="blank-desc">Modificateur de la méthode creer()</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">②</span>
+            <input class="uml-input" data-ex="sf-uml" data-answer="Vehicule" placeholder="...">
+            <span class="blank-desc">Nom de l'interface produit</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">③</span>
+            <input class="uml-input" data-ex="sf-uml" data-answer="implements" placeholder="...">
+            <span class="blank-desc">Type de relation (Voiture/Moto/Camion → Vehicule)</span>
+          </div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('sf-uml')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('sf-uml')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('sf-uml')">↺</button>
+          <span class="score-msg" id="sf-uml-score"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FACTORY METHOD ── -->
+    <div class="ex-card creation" id="factory-method">
+      <div class="ex-header">
+        <span class="ex-title">Factory Method</span>
+        <span class="scenario-badge">Scénario : Boulangeries régionales</span>
+        <span class="category-badge badge-creation">Création</span>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title impl">Implémentation Java</div>
+<pre class="code-block">interface Pain {
+    void preparer();
+    void emballer();
+}
+class Baguette implements Pain {
+    public void preparer() { System.out.println("Façonnage baguette"); }
+    public void emballer() { System.out.println("Papier baguette"); }
+}
+class Brioche implements Pain {
+    public void preparer() { System.out.println("Pétrissage brioche"); }
+    public void emballer() { System.out.println("Boîte brioche"); }
+}
+
+<input class="code-input" data-ex="fm" data-answer="abstract" style="width:8ch"> class Boulangerie {
+    // Factory Method — chaque sous-classe décide quel Pain créer
+    protected <input class="code-input" data-ex="fm" data-answer="abstract" style="width:8ch"> Pain creerPain();
+
+    // Méthode template — utilise le factory method
+    public void vendre() {
+        Pain pain = <input class="code-input" data-ex="fm" data-answer="creerPain" style="width:9ch">();
+        pain.preparer();
+        pain.emballer();
+    }
+}
+
+class BoulangerieParisienne <input class="code-input" data-ex="fm" data-answer="extends" style="width:7ch"> Boulangerie {
+    @Override
+    protected Pain creerPain() { return new Baguette(); }
+}
+
+class BoulangerieLyonnaise extends Boulangerie {
+    <input class="code-input" data-ex="fm" data-answer="@Override" style="width:9ch">
+    protected Pain creerPain() { return new Brioche(); }
+}</pre>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('fm')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('fm')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('fm')">↺</button>
+          <span class="score-msg" id="fm-score"></span>
+        </div>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title uml">Diagramme UML</div>
+        <div class="uml-block">
+  ┌──────────────────────────────────┐
+  │     «①»  Boulangerie            │
+  │  + vendre()                     │
+  │  # ② creerPain(): Pain          │
+  └──────────────────────────────────┘
+               ▲
+               │ ③
+     ┌─────────┴──────────┐
+     │                    │
+┌────┴──────────┐   ┌─────┴─────────────┐
+│ Boulangerie   │   │ Boulangerie       │
+│ Parisienne    │   │ Lyonnaise         │
+│ creerPain()   │   │ creerPain()       │
+└───────────────┘   └───────────────────┘</div>
+        <div class="blank-rows">
+          <div class="blank-row">
+            <span class="blank-num">①</span>
+            <input class="uml-input" data-ex="fm-uml" data-answer="abstract" placeholder="...">
+            <span class="blank-desc">Stéréotype de la classe Boulangerie</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">②</span>
+            <input class="uml-input" data-ex="fm-uml" data-answer="abstract" placeholder="...">
+            <span class="blank-desc">Modificateur de la méthode creerPain()</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">③</span>
+            <input class="uml-input" data-ex="fm-uml" data-answer="extends" placeholder="...">
+            <span class="blank-desc">Relation des sous-boulangeries vers Boulangerie</span>
+          </div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('fm-uml')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('fm-uml')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('fm-uml')">↺</button>
+          <span class="score-msg" id="fm-uml-score"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ABSTRACT FACTORY ── -->
+    <div class="ex-card creation" id="abstract-factory">
+      <div class="ex-header">
+        <span class="ex-title">Abstract Factory</span>
+        <span class="scenario-badge">Scénario : Thèmes UI (Windows / Mac)</span>
+        <span class="category-badge badge-creation">Création</span>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title impl">Implémentation Java</div>
+<pre class="code-block">interface Bouton   { void afficher(); }
+interface Checkbox { void cocher(); }
+
+// Famille Windows
+class BoutonWindows   implements Bouton   { public void afficher() { System.out.println("[OK]"); } }
+class CheckboxWindows implements Checkbox { public void cocher()   { System.out.println("[x]"); } }
+
+// Famille Mac
+class BoutonMac   implements Bouton   { public void afficher() { System.out.println("(OK)"); } }
+class CheckboxMac implements Checkbox { public void cocher()   { System.out.println("(✓)"); } }
+
+// Fabrique abstraite — déclare la famille de produits
+interface <input class="code-input" data-ex="af" data-answer="FabriqueUI" style="width:10ch"> {
+    <input class="code-input" data-ex="af" data-answer="Bouton" style="width:6ch">   creerBouton();
+    Checkbox creerCheckbox();
+}
+
+// Fabrique concrète Windows
+class FabriqueWindows <input class="code-input" data-ex="af" data-answer="implements" style="width:10ch"> FabriqueUI {
+    public Bouton   creerBouton()   { return new BoutonWindows(); }
+    public Checkbox creerCheckbox() { return new CheckboxWindows(); }
+}
+
+// Fabrique concrète Mac
+class FabriqueMac implements FabriqueUI {
+    public Bouton   creerBouton()   { return new BoutonMac(); }
+    public Checkbox creerCheckbox() { return new CheckboxMac(); }
+}
+
+// Client — dépend uniquement de l'interface
+class Application {
+    private <input class="code-input" data-ex="af" data-answer="FabriqueUI" style="width:10ch"> fabrique;
+
+    public Application(FabriqueUI fabrique) {
+        this.fabrique = fabrique;
+    }
+
+    public void construire() {
+        Bouton   btn = fabrique.creerBouton();
+        Checkbox cb  = fabrique.creerCheckbox();
+        btn.afficher();
+        cb.cocher();
+    }
+}</pre>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('af')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('af')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('af')">↺</button>
+          <span class="score-msg" id="af-score"></span>
+        </div>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title uml">Diagramme UML</div>
+        <div class="uml-block">
+       ┌──────────────────────────────┐
+       │  &lt;&lt;interface&gt;&gt; ①            │
+       │  + creerBouton(): Bouton     │
+       │  + creerCheckbox(): Checkbox │
+       └──────────────────────────────┘
+                     ▲
+              ───────┴────────
+              │               │
+              │ ②             │ ②
+  ┌───────────┴───┐     ┌─────┴───────────┐
+  │FabriqueWindows│     │  FabriqueMac    │
+  └───────────────┘     └─────────────────┘
+
+  Application ──③──→ FabriqueUI   (dépendance)</div>
+        <div class="blank-rows">
+          <div class="blank-row">
+            <span class="blank-num">①</span>
+            <input class="uml-input" data-ex="af-uml" data-answer="FabriqueUI" placeholder="...">
+            <span class="blank-desc">Nom de l'interface fabrique abstraite</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">②</span>
+            <input class="uml-input" data-ex="af-uml" data-answer="implements" placeholder="...">
+            <span class="blank-desc">Relation des fabriques concrètes → FabriqueUI</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">③</span>
+            <input class="uml-input" data-ex="af-uml" data-answer="utilise" data-alt="uses,dépend de,depends on" placeholder="...">
+            <span class="blank-desc">Nature du lien Application → FabriqueUI</span>
+          </div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('af-uml')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('af-uml')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('af-uml')">↺</button>
+          <span class="score-msg" id="af-uml-score"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BUILDER ── -->
+    <div class="ex-card creation" id="builder">
+      <div class="ex-header">
+        <span class="ex-title">Builder</span>
+        <span class="scenario-badge">Scénario : Constructeur de requêtes SQL</span>
+        <span class="category-badge badge-creation">Création</span>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title impl">Implémentation Java</div>
+<pre class="code-block">class RequeteSQL {
+    private final String table;
+    private final String condition;
+    private final int limite;
+
+    private RequeteSQL(Builder builder) {
+        this.table     = builder.table;
+        this.condition = builder.condition;
+        this.limite    = builder.limite;
+    }
+
+    public static class <input class="code-input" data-ex="build" data-answer="Builder" style="width:7ch"> {
+        private String table;
+        private String condition = "";
+        private int    limite    = 100;
+
+        public Builder table(String t) {
+            this.table = t;
+            return <input class="code-input" data-ex="build" data-answer="this" style="width:4ch">; // méthode fluente
+        }
+
+        public Builder where(String c) {
+            this.condition = c;
+            return this;
+        }
+
+        public Builder limite(int l) {
+            this.limite = l;
+            return this;
+        }
+
+        public RequeteSQL <input class="code-input" data-ex="build" data-answer="build" style="width:5ch">() {
+            return new RequeteSQL(this);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "SELECT * FROM " + table
+            + (condition.isEmpty() ? "" : " WHERE " + condition)
+            + " LIMIT " + limite;
+    }
+}
+
+// Utilisation — chaînage fluent
+RequeteSQL req = new RequeteSQL.<input class="code-input" data-ex="build" data-answer="Builder" style="width:7ch">()
+    .table("clients")
+    .where("age > 18")
+    .limite(50)
+    .<input class="code-input" data-ex="build" data-answer="build" style="width:5ch">();
+System.out.println(req); // SELECT * FROM clients WHERE age > 18 LIMIT 50</pre>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('build')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('build')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('build')">↺</button>
+          <span class="score-msg" id="build-score"></span>
+        </div>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title uml">Diagramme UML</div>
+        <div class="uml-block">
+  ┌──────────────────────────────────┐
+  │           RequeteSQL             │
+  │  - table, condition, limite      │
+  │  - RequeteSQL(Builder)           │
+  │                                  │
+  │  ┌──────────────────────────┐    │
+  │  │  «inner class»  ①        │    │
+  │  │  + table(t): Builder     │    │
+  │  │  + where(c): Builder     │    │
+  │  │  + limite(l): Builder    │    │
+  │  │  + ②(): RequeteSQL       │    │
+  │  └──────────────────────────┘    │
+  └──────────────────────────────────┘
+
+  Chaque méthode retourne ③ pour le chaînage.</div>
+        <div class="blank-rows">
+          <div class="blank-row">
+            <span class="blank-num">①</span>
+            <input class="uml-input" data-ex="build-uml" data-answer="Builder" placeholder="...">
+            <span class="blank-desc">Nom de la classe interne</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">②</span>
+            <input class="uml-input" data-ex="build-uml" data-answer="build" placeholder="...">
+            <span class="blank-desc">Méthode terminale qui crée le produit final</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">③</span>
+            <input class="uml-input" data-ex="build-uml" data-answer="this" placeholder="...">
+            <span class="blank-desc">Valeur retournée par chaque setter (fluent)</span>
+          </div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('build-uml')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('build-uml')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('build-uml')">↺</button>
+          <span class="score-msg" id="build-uml-score"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         STRUCTURE
+    ═══════════════════════════════════════ -->
+    <div class="category-header">
+      <span class="section-title" style="padding-top:0;font-size:1.4rem">Structure</span>
+      <span class="category-badge badge-structure">Structural Patterns</span>
+    </div>
+
+    <!-- ── COMPOSITE ── -->
+    <div class="ex-card structure" id="composite">
+      <div class="ex-header">
+        <span class="ex-title">Composite</span>
+        <span class="scenario-badge">Scénario : Système de fichiers</span>
+        <span class="category-badge badge-structure">Structure</span>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title impl">Implémentation Java</div>
+<pre class="code-block">// Interface commune — Fichier et Dossier traités de façon identique
+interface <input class="code-input" data-ex="comp" data-answer="Composant" style="width:9ch"> {
+    int getTaille();
+}
+
+// Feuille — pas d'enfants
+class Fichier implements Composant {
+    private String nom;
+    private int taille;
+
+    public Fichier(String nom, int taille) {
+        this.nom    = nom;
+        this.taille = taille;
+    }
+
+    @Override
+    public int getTaille() { return taille; }
+}
+
+// Composite — contient d'autres Composant
+class Dossier <input class="code-input" data-ex="comp" data-answer="implements" style="width:10ch"> Composant {
+    private String nom;
+    private List&lt;<input class="code-input" data-ex="comp" data-answer="Composant" style="width:9ch">&gt; enfants = new ArrayList&lt;&gt;();
+
+    public void ajouter(Composant c) {
+        <input class="code-input" data-ex="comp" data-answer="enfants" style="width:7ch">.add(c);
+    }
+
+    @Override
+    public int getTaille() {
+        return enfants.stream()
+            .<input class="code-input" data-ex="comp" data-answer="mapToInt" style="width:8ch">(Composant::getTaille)
+            .sum();
+    }
+}
+
+// Utilisation
+Dossier racine = new Dossier("racine");
+racine.ajouter(new Fichier("readme.txt", 2));
+racine.ajouter(new Fichier("app.jar",  150));
+System.out.println(racine.getTaille()); // 152</pre>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('comp')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('comp')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('comp')">↺</button>
+          <span class="score-msg" id="comp-score"></span>
+        </div>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title uml">Diagramme UML</div>
+        <div class="uml-block">
+        ┌────────────────────┐
+        │  &lt;&lt;interface&gt;&gt;     │
+        │   ① Composant      │
+        │  + getTaille(): int │
+        └────────────────────┘
+                  ▲
+          ────────┴────────
+          │ ②              │ ②
+  ┌───────┴──────┐   ┌─────┴──────────────────┐
+  │   Fichier    │   │       Dossier           │
+  │ - taille:int │   │ - enfants: List&lt;③&gt;     │
+  └──────────────┘   │ + ajouter(Composant)   │
+                     └──────────────┬──────────┘
+                                    │
+                               ④ 0..*
+                                    ◆ (contient)</div>
+        <div class="blank-rows">
+          <div class="blank-row">
+            <span class="blank-num">①</span>
+            <input class="uml-input" data-ex="comp-uml" data-answer="Composant" placeholder="...">
+            <span class="blank-desc">Nom de l'interface commune</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">②</span>
+            <input class="uml-input" data-ex="comp-uml" data-answer="implements" placeholder="...">
+            <span class="blank-desc">Relation Fichier/Dossier → interface</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">③</span>
+            <input class="uml-input" data-ex="comp-uml" data-answer="Composant" placeholder="...">
+            <span class="blank-desc">Type générique de la liste d'enfants</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">④</span>
+            <input class="uml-input" data-ex="comp-uml" data-answer="0..*" data-alt="*,0..n" placeholder="...">
+            <span class="blank-desc">Multiplicité : un Dossier contient combien de Composant ?</span>
+          </div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('comp-uml')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('comp-uml')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('comp-uml')">↺</button>
+          <span class="score-msg" id="comp-uml-score"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DÉCORATEUR ── -->
+    <div class="ex-card structure" id="decorateur">
+      <div class="ex-header">
+        <span class="ex-title">Décorateur</span>
+        <span class="scenario-badge">Scénario : Café avec extras</span>
+        <span class="category-badge badge-structure">Structure</span>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title impl">Implémentation Java</div>
+<pre class="code-block">interface Boisson {
+    String getDescription();
+    double getPrix();
+}
+
+// Composant concret
+class Cafe <input class="code-input" data-ex="deco" data-answer="implements" style="width:10ch"> Boisson {
+    public String getDescription() { return "Café"; }
+    public double getPrix()        { return 1.50; }
+}
+
+// Décorateur abstrait — implémente ET contient Boisson
+abstract class DecorateurBoisson <input class="code-input" data-ex="deco" data-answer="implements" style="width:10ch"> Boisson {
+    protected Boisson <input class="code-input" data-ex="deco" data-answer="boisson" style="width:7ch">; // délégué
+
+    public DecorateurBoisson(Boisson b) { this.boisson = b; }
+
+    public String getDescription() { return boisson.getDescription(); }
+    public double getPrix()        { return boisson.getPrix(); }
+}
+
+// Décorateurs concrets
+class Lait extends DecorateurBoisson {
+    public Lait(Boisson b) { super(b); }
+
+    @Override
+    public String getDescription() {
+        return <input class="code-input" data-ex="deco" data-answer="boisson" style="width:7ch">.getDescription() + " + Lait";
+    }
+
+    @Override
+    public double getPrix() {
+        return <input class="code-input" data-ex="deco" data-answer="boisson" style="width:7ch">.getPrix() + 0.30;
+    }
+}
+
+class Sucre extends DecorateurBoisson {
+    public Sucre(Boisson b) { super(b); }
+    public String getDescription() { return boisson.getDescription() + " + Sucre"; }
+    public double getPrix()        { return boisson.getPrix() + 0.10; }
+}
+
+// Utilisation — empilement de décorateurs
+Boisson commande = new Sucre(new Lait(new Cafe()));
+System.out.println(commande.getDescription()); // Café + Lait + Sucre
+System.out.println(commande.getPrix());        // 1.90</pre>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('deco')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('deco')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('deco')">↺</button>
+          <span class="score-msg" id="deco-score"></span>
+        </div>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title uml">Diagramme UML</div>
+        <div class="uml-block">
+          ┌──────────────────────────┐
+          │     &lt;&lt;interface&gt;&gt;        │
+          │        ①                 │
+          │  + getDescription()      │
+          │  + getPrix(): double     │
+          └──────────┬───────────────┘
+               ▲     │
+          ─────┤     │ «②» (has-a)
+          │    │     ▼
+          │  ┌─┴─────────────────────┐
+          │  │  abstract             │
+          │  │  DecorateurBoisson    │
+          │  │  # boisson: ③         │
+          │  └──────────┬────────────┘
+          │             │ ④
+          │      ───────┴──────
+          │      │             │
+          │  ┌───┴──┐     ┌───┴───┐
+          │  │ Lait │     │ Sucre │
+          │  └──────┘     └───────┘
+          │
+          └──── Cafe</div>
+        <div class="blank-rows">
+          <div class="blank-row">
+            <span class="blank-num">①</span>
+            <input class="uml-input" data-ex="deco-uml" data-answer="Boisson" placeholder="...">
+            <span class="blank-desc">Interface Component (contrat commun)</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">②</span>
+            <input class="uml-input" data-ex="deco-uml" data-answer="wraps" data-alt="délègue,contient,délègue à" placeholder="...">
+            <span class="blank-desc">Nature du lien DecorateurBoisson → interface (composition)</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">③</span>
+            <input class="uml-input" data-ex="deco-uml" data-answer="Boisson" placeholder="...">
+            <span class="blank-desc">Type du champ délégué dans DecorateurBoisson</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">④</span>
+            <input class="uml-input" data-ex="deco-uml" data-answer="extends" placeholder="...">
+            <span class="blank-desc">Relation Lait/Sucre → DecorateurBoisson</span>
+          </div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('deco-uml')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('deco-uml')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('deco-uml')">↺</button>
+          <span class="score-msg" id="deco-uml-score"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         COMPORTEMENT
+    ═══════════════════════════════════════ -->
+    <div class="category-header">
+      <span class="section-title" style="padding-top:0;font-size:1.4rem">Comportement</span>
+      <span class="category-badge badge-comportement">Behavioral Patterns</span>
+    </div>
+
+    <!-- ── STRATEGY ── -->
+    <div class="ex-card comportement" id="strategy">
+      <div class="ex-header">
+        <span class="ex-title">Strategy</span>
+        <span class="scenario-badge">Scénario : Modes de paiement</span>
+        <span class="category-badge badge-comportement">Comportement</span>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title impl">Implémentation Java</div>
+<pre class="code-block">// Strategy — contrat commun pour tous les algorithmes
+interface <input class="code-input" data-ex="strat" data-answer="StrategiePaiement" style="width:17ch"> {
+    void payer(double montant);
+}
+
+// Stratégies concrètes
+class PaiementCarte <input class="code-input" data-ex="strat" data-answer="implements" style="width:10ch"> StrategiePaiement {
+    public void payer(double montant) {
+        System.out.println("Paiement carte: " + montant + "€");
+    }
+}
+
+class PaiementPayPal implements StrategiePaiement {
+    public void payer(double montant) {
+        System.out.println("PayPal: " + montant + "€");
+    }
+}
+
+class PaiementCrypto implements StrategiePaiement {
+    public void payer(double montant) {
+        System.out.println("Crypto ≈ " + (montant / 45000) + " BTC");
+    }
+}
+
+// Contexte — délègue à la stratégie active
+class Caisse {
+    private StrategiePaiement <input class="code-input" data-ex="strat" data-answer="strategie" style="width:9ch">;
+
+    public void setStrategie(StrategiePaiement s) {
+        this.<input class="code-input" data-ex="strat" data-answer="strategie" style="width:9ch"> = s;
+    }
+
+    public void effectuerPaiement(double montant) {
+        <input class="code-input" data-ex="strat" data-answer="strategie" style="width:9ch">.payer(montant);
+    }
+}
+
+// Utilisation — on peut changer de stratégie à chaud
+Caisse caisse = new Caisse();
+caisse.setStrategie(new PaiementCarte());
+caisse.effectuerPaiement(49.99); // Paiement carte: 49.99€
+
+caisse.setStrategie(new PaiementPayPal());
+caisse.effectuerPaiement(49.99); // PayPal: 49.99€</pre>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('strat')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('strat')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('strat')">↺</button>
+          <span class="score-msg" id="strat-score"></span>
+        </div>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title uml">Diagramme UML</div>
+        <div class="uml-block">
+  ┌─────────────────────┐        ┌──────────────────────┐
+  │     «Context»       │        │   &lt;&lt;interface&gt;&gt;       │
+  │      Caisse         │──①──→  │  ②                   │
+  │  - strategie        │        │  + payer(montant)     │
+  │  + setStrategie()   │        └──────────────┬────────┘
+  │  + effectuerPaiement│                       ▲
+  └─────────────────────┘             ──────────┴──────────
+                                      │          │         │
+                              ┌───────┴──┐  ┌───┴────┐ ┌──┴──────┐
+                              │ Paiement │  │Paiement│ │Paiement │
+                              │  Carte   │  │PayPal  │ │ Crypto  │
+                              └──────────┘  └────────┘ └─────────┘
+                                          ③ (relation commune)</div>
+        <div class="blank-rows">
+          <div class="blank-row">
+            <span class="blank-num">①</span>
+            <input class="uml-input" data-ex="strat-uml" data-answer="utilise" data-alt="uses,délègue,dépend de" placeholder="...">
+            <span class="blank-desc">Nature du lien Caisse → StrategiePaiement</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">②</span>
+            <input class="uml-input" data-ex="strat-uml" data-answer="StrategiePaiement" placeholder="...">
+            <span class="blank-desc">Nom de l'interface Strategy</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">③</span>
+            <input class="uml-input" data-ex="strat-uml" data-answer="implements" placeholder="...">
+            <span class="blank-desc">Relation des stratégies concrètes → interface</span>
+          </div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('strat-uml')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('strat-uml')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('strat-uml')">↺</button>
+          <span class="score-msg" id="strat-uml-score"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── OBSERVER PUSH ── -->
+    <div class="ex-card comportement" id="observer-push">
+      <div class="ex-header">
+        <span class="ex-title">Observer — Push</span>
+        <span class="scenario-badge">Scénario : Station météo</span>
+        <span class="category-badge badge-comportement">Comportement</span>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title impl">Implémentation Java</div>
+<pre class="code-block">// PUSH : le Subject envoie les données dans l'appel update()
+interface Observateur {
+    // La donnée est POUSSÉE en paramètre
+    void mettreAJour(<input class="code-input" data-ex="push" data-answer="double" style="width:6ch"> temperature);
+}
+
+class StationMeteo {
+    private List&lt;Observateur&gt; observateurs = new ArrayList&lt;&gt;();
+    private double temperature;
+
+    public void abonner(<input class="code-input" data-ex="push" data-answer="Observateur" style="width:11ch"> o) {
+        observateurs.add(o);
+    }
+
+    public void setTemperature(double t) {
+        this.temperature = t;
+        <input class="code-input" data-ex="push" data-answer="notifier" style="width:8ch">(); // déclenche la notification
+    }
+
+    private void notifier() {
+        for (Observateur o : observateurs) {
+            o.mettreAJour(<input class="code-input" data-ex="push" data-answer="temperature" style="width:11ch">); // donnée poussée
+        }
+    }
+}
+
+// Observer concret — reçoit la donnée sans interroger le Subject
+class AfficheurMeteo implements Observateur {
+    @Override
+    public void mettreAJour(double temperature) {
+        System.out.println("Météo : " + temperature + "°C");
+    }
+}
+
+// Utilisation
+StationMeteo station = new StationMeteo();
+station.abonner(new AfficheurMeteo());
+station.setTemperature(22.5); // → "Météo : 22.5°C"</pre>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('push')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('push')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('push')">↺</button>
+          <span class="score-msg" id="push-score"></span>
+        </div>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title uml">Diagramme UML</div>
+        <div class="uml-block">
+  ┌──────────────────────────────┐      ┌─────────────────────────────┐
+  │     «Subject» ①              │      │    &lt;&lt;interface&gt;&gt;            │
+  │     StationMeteo             │──②──→│      Observateur            │
+  │  - observateurs: List        │      │  + mettreAJour(③ t)        │
+  │  + abonner(Observateur)      │      └─────────────────────────────┘
+  │  + setTemperature(double)    │                   ▲
+  └──────────────────────────────┘                   │ implements
+                                             AfficheurMeteo
+                                             (reçoit la donnée)</div>
+        <div class="blank-rows">
+          <div class="blank-row">
+            <span class="blank-num">①</span>
+            <input class="uml-input" data-ex="push-uml" data-answer="Subject" data-alt="Sujet" placeholder="...">
+            <span class="blank-desc">Rôle UML de StationMeteo dans le pattern</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">②</span>
+            <input class="uml-input" data-ex="push-uml" data-answer="notifie" data-alt="notifies,notify" placeholder="...">
+            <span class="blank-desc">Nature de la relation Subject → Observateur</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">③</span>
+            <input class="uml-input" data-ex="push-uml" data-answer="double" placeholder="...">
+            <span class="blank-desc">Type du paramètre dans mettreAJour() — ce qui est POUSSÉ</span>
+          </div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('push-uml')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('push-uml')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('push-uml')">↺</button>
+          <span class="score-msg" id="push-uml-score"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── OBSERVER PULL ── -->
+    <div class="ex-card comportement" id="observer-pull">
+      <div class="ex-header">
+        <span class="ex-title">Observer — Pull</span>
+        <span class="scenario-badge">Scénario : Cours de bourse</span>
+        <span class="category-badge badge-comportement">Comportement</span>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title impl">Implémentation Java</div>
+<pre class="code-block">// PULL : le Subject ne pousse rien — l'Observer interroge lui-même
+interface Observateur {
+    // Pas de paramètre — l'observer ira chercher les données
+    void mettreAJour(); // laisser vide — pas de paramètre (différence clé avec Push)
+}
+
+class Bourse {
+    private List&lt;Observateur&gt; observateurs = new ArrayList&lt;&gt;();
+    private double cours;
+
+    // Getter exposé pour que les observers puissent TIRER la donnée
+    public double getCours() { return cours; }
+
+    public void setCours(double c) {
+        this.cours = c;
+        notifier();
+    }
+
+    private void notifier() {
+        for (Observateur o : observateurs) {
+            o.mettreAJour(); // aucune donnée transmise
+        }
+    }
+}
+
+// Observer concret — stocke une référence au Subject pour l'interroger
+class Investisseur implements Observateur {
+    private <input class="code-input" data-ex="pull" data-answer="Bourse" style="width:6ch"> bourse; // référence au Subject
+
+    public Investisseur(Bourse b) { this.bourse = b; }
+
+    @Override
+    public void mettreAJour() {
+        // PULL : c'est l'observer qui va chercher la donnée
+        double cours = <input class="code-input" data-ex="pull" data-answer="bourse" style="width:6ch">.<input class="code-input" data-ex="pull" data-answer="getCours" style="width:8ch">();
+        System.out.println("Cours actuel : " + cours + "€");
+    }
+}
+
+// Utilisation
+Bourse cac40 = new Bourse();
+Investisseur inv = new Investisseur(cac40);
+cac40.abonner(inv);
+cac40.setCours(7240.50); // → "Cours actuel : 7240.5€"</pre>
+        <div class="diff-box">
+          <strong>Push vs Pull :</strong>
+          Push → <code>mettreAJour(double data)</code> — la donnée arrive dans l'appel.<br>
+          Pull → <code>mettreAJour()</code> sans paramètre — l'observer stocke une référence au Subject et appelle son getter.
+        </div>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('pull')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('pull')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('pull')">↺</button>
+          <span class="score-msg" id="pull-score"></span>
+        </div>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title uml">Diagramme UML</div>
+        <div class="uml-block">
+  ┌────────────────────────────┐      ┌──────────────────────────┐
+  │  «Subject»  Bourse         │      │  &lt;&lt;interface&gt;&gt;           │
+  │  + ①(): double             │      │  Observateur             │
+  │  + setCours(double)        │──②──→│  + mettreAJour③          │
+  └────────────────────────────┘      └──────────────────────────┘
+            ▲                                     ▲
+            │ stocke référence                    │ implements
+            │                              Investisseur
+  Investisseur ──────────────────────────────────┘
+  (appelle getCours() pour récupérer la donnée)</div>
+        <div class="blank-rows">
+          <div class="blank-row">
+            <span class="blank-num">①</span>
+            <input class="uml-input" data-ex="pull-uml" data-answer="getCours" placeholder="...">
+            <span class="blank-desc">Getter exposé par le Subject pour le PULL</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">②</span>
+            <input class="uml-input" data-ex="pull-uml" data-answer="notifie" data-alt="notifies" placeholder="...">
+            <span class="blank-desc">Relation Subject → Observateur</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">③</span>
+            <input class="uml-input" data-ex="pull-uml" data-answer="()" data-alt="() sans paramètre,sans paramètre,void" placeholder="...">
+            <span class="blank-desc">Signature de mettreAJour — différence clé avec le Push</span>
+          </div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('pull-uml')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('pull-uml')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('pull-uml')">↺</button>
+          <span class="score-msg" id="pull-uml-score"></span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="shared.js"></script>
+<script src="exercices.js"></script>
+</body>
+</html>
