@@ -219,6 +219,15 @@
 }
 .diff-box strong { color: var(--accent5); }
 
+.sidebar-nav-home {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1.5rem; color: var(--text3);
+  text-decoration: none; font-size: 0.8rem;
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 0.5rem; transition: color 0.2s;
+}
+.sidebar-nav-home:hover { color: var(--text); }
+
 @media (max-width: 768px) {
   .ex-card { padding: 1.25rem; }
   .code-block, .uml-block { font-size: 0.72rem; padding: 1rem; }
@@ -236,442 +245,30 @@
 <div class="page-wrapper">
   <nav class="sidebar">
     <div class="sidebar-logo">
-      <a href="index.html">Java Design Patterns</a>
-      <span>Guide d'étude</span>
+      <a href="index.html">⬡ Java Study Guide</a>
+      <span>Exercices</span>
     </div>
-    <div class="sidebar-section">Navigation</div>
-    <a href="design-patterns.html" class="sidebar-link">Fiches théoriques</a>
-    <a href="qcm.html" class="sidebar-link">QCM</a>
-    <a href="exercices.html" class="sidebar-link active">Exercices</a>
-    <a href="resume.html" class="sidebar-link">Résumé</a>
-
-    <div class="sidebar-section">Création</div>
-    <a href="#simple-factory"   class="sidebar-link creation">Simple Factory</a>
-    <a href="#factory-method"   class="sidebar-link creation">Factory Method</a>
-    <a href="#abstract-factory" class="sidebar-link creation">Abstract Factory</a>
-    <a href="#builder"          class="sidebar-link creation">Builder</a>
+    <a href="index.html" class="sidebar-nav-home">← Accueil</a>
 
     <div class="sidebar-section">Structure</div>
     <a href="#composite"  class="sidebar-link structure">Composite</a>
     <a href="#decorateur" class="sidebar-link structure">Décorateur</a>
 
     <div class="sidebar-section">Comportement</div>
-    <a href="#strategy"     class="sidebar-link comportement">Strategy</a>
+    <a href="#strategy"      class="sidebar-link comportement">Strategy</a>
     <a href="#observer-push" class="sidebar-link comportement">Observer Push</a>
     <a href="#observer-pull" class="sidebar-link comportement">Observer Pull</a>
+
+    <div class="sidebar-section">Création</div>
+    <a href="#simple-factory"   class="sidebar-link creation">Simple Factory</a>
+    <a href="#factory-method"   class="sidebar-link creation">Factory Method</a>
+    <a href="#abstract-factory" class="sidebar-link creation">Abstract Factory</a>
+    <a href="#builder"          class="sidebar-link creation">Builder</a>
   </nav>
 
   <main class="main-content">
     <h1 class="page-title">Exercices</h1>
     <p class="page-subtitle">Code à trous · Diagrammes UML · Validation immédiate</p>
-
-    <!-- ═══════════════════════════════════════
-         CRÉATION
-    ═══════════════════════════════════════ -->
-    <div class="category-header">
-      <span class="section-title" style="padding-top:0;font-size:1.4rem">Création</span>
-      <span class="category-badge badge-creation">Creational Patterns</span>
-    </div>
-
-    <!-- ── SIMPLE FACTORY ── -->
-    <div class="ex-card creation" id="simple-factory">
-      <div class="ex-header">
-        <span class="ex-title">Simple Factory</span>
-        <span class="scenario-badge">Scénario : Garage de véhicules</span>
-        <span class="category-badge badge-creation">Création</span>
-      </div>
-
-      <div class="ex-section">
-        <div class="ex-section-title impl">Implémentation Java</div>
-<pre class="code-block">interface Vehicule {
-    void demarrer();
-}
-
-class Voiture <input class="code-input" data-ex="sf" data-answer="implements" style="width:10ch"> Vehicule {
-    public void demarrer() { System.out.println("Vroooom"); }
-}
-class Moto implements Vehicule {
-    public void demarrer() { System.out.println("Pétarade"); }
-}
-
-class FabriqueVehicule {
-    // Méthode statique — pas d'instance de FabriqueVehicule nécessaire
-    public <input class="code-input" data-ex="sf" data-answer="static" style="width:6ch"> Vehicule creer(String type) {
-        switch (type) {
-            case "voiture": return new <input class="code-input" data-ex="sf" data-answer="Voiture" style="width:7ch">();
-            case "moto"   : return new Moto();
-            default: throw new IllegalArgumentException("Type inconnu: " + type);
-        }
-    }
-}
-
-// Utilisation — appel statique, sans new FabriqueVehicule()
-Vehicule v = FabriqueVehicule.<input class="code-input" data-ex="sf" data-answer="creer" style="width:5ch">("voiture");
-v.demarrer(); // Vroooom</pre>
-        <div class="ex-actions">
-          <button class="btn-check"  onclick="checkEx('sf')">Vérifier</button>
-          <button class="btn-reveal" onclick="revealEx('sf')">Révéler</button>
-          <button class="btn-reset"  onclick="resetEx('sf')">↺</button>
-          <span class="score-msg" id="sf-score"></span>
-        </div>
-      </div>
-
-      <div class="ex-section">
-        <div class="ex-section-title uml">Diagramme UML</div>
-        <div class="uml-block">
-  ┌────────────────────────────────┐
-  │        FabriqueVehicule        │
-  │  + ① creer(type): Vehicule     │
-  └────────────────┬───────────────┘
-                   │ «crée»
-                   ▼
-       ┌───────────────────┐
-       │  &lt;&lt;interface&gt;&gt;    │
-       │    ② Vehicule      │
-       │  + demarrer()     │
-       └─────────┬─────────┘
-                 │ ③
-        ┌────────┼────────┐
-        ▼        ▼        ▼
-     Voiture   Moto   Camion</div>
-        <div class="blank-rows">
-          <div class="blank-row">
-            <span class="blank-num">①</span>
-            <input class="uml-input" data-ex="sf-uml" data-answer="static" placeholder="...">
-            <span class="blank-desc">Modificateur de la méthode creer()</span>
-          </div>
-          <div class="blank-row">
-            <span class="blank-num">②</span>
-            <input class="uml-input" data-ex="sf-uml" data-answer="Vehicule" placeholder="...">
-            <span class="blank-desc">Nom de l'interface produit</span>
-          </div>
-          <div class="blank-row">
-            <span class="blank-num">③</span>
-            <input class="uml-input" data-ex="sf-uml" data-answer="implements" placeholder="...">
-            <span class="blank-desc">Type de relation (Voiture/Moto/Camion → Vehicule)</span>
-          </div>
-        </div>
-        <div class="ex-actions">
-          <button class="btn-check"  onclick="checkEx('sf-uml')">Vérifier</button>
-          <button class="btn-reveal" onclick="revealEx('sf-uml')">Révéler</button>
-          <button class="btn-reset"  onclick="resetEx('sf-uml')">↺</button>
-          <span class="score-msg" id="sf-uml-score"></span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── FACTORY METHOD ── -->
-    <div class="ex-card creation" id="factory-method">
-      <div class="ex-header">
-        <span class="ex-title">Factory Method</span>
-        <span class="scenario-badge">Scénario : Boulangeries régionales</span>
-        <span class="category-badge badge-creation">Création</span>
-      </div>
-
-      <div class="ex-section">
-        <div class="ex-section-title impl">Implémentation Java</div>
-<pre class="code-block">interface Pain {
-    void preparer();
-    void emballer();
-}
-class Baguette implements Pain {
-    public void preparer() { System.out.println("Façonnage baguette"); }
-    public void emballer() { System.out.println("Papier baguette"); }
-}
-class Brioche implements Pain {
-    public void preparer() { System.out.println("Pétrissage brioche"); }
-    public void emballer() { System.out.println("Boîte brioche"); }
-}
-
-<input class="code-input" data-ex="fm" data-answer="abstract" style="width:8ch"> class Boulangerie {
-    // Factory Method — chaque sous-classe décide quel Pain créer
-    protected <input class="code-input" data-ex="fm" data-answer="abstract" style="width:8ch"> Pain creerPain();
-
-    // Méthode template — utilise le factory method
-    public void vendre() {
-        Pain pain = <input class="code-input" data-ex="fm" data-answer="creerPain" style="width:9ch">();
-        pain.preparer();
-        pain.emballer();
-    }
-}
-
-class BoulangerieParisienne <input class="code-input" data-ex="fm" data-answer="extends" style="width:7ch"> Boulangerie {
-    @Override
-    protected Pain creerPain() { return new Baguette(); }
-}
-
-class BoulangerieLyonnaise extends Boulangerie {
-    <input class="code-input" data-ex="fm" data-answer="@Override" style="width:9ch">
-    protected Pain creerPain() { return new Brioche(); }
-}</pre>
-        <div class="ex-actions">
-          <button class="btn-check"  onclick="checkEx('fm')">Vérifier</button>
-          <button class="btn-reveal" onclick="revealEx('fm')">Révéler</button>
-          <button class="btn-reset"  onclick="resetEx('fm')">↺</button>
-          <span class="score-msg" id="fm-score"></span>
-        </div>
-      </div>
-
-      <div class="ex-section">
-        <div class="ex-section-title uml">Diagramme UML</div>
-        <div class="uml-block">
-  ┌──────────────────────────────────┐
-  │     «①»  Boulangerie            │
-  │  + vendre()                     │
-  │  # ② creerPain(): Pain          │
-  └──────────────────────────────────┘
-               ▲
-               │ ③
-     ┌─────────┴──────────┐
-     │                    │
-┌────┴──────────┐   ┌─────┴─────────────┐
-│ Boulangerie   │   │ Boulangerie       │
-│ Parisienne    │   │ Lyonnaise         │
-│ creerPain()   │   │ creerPain()       │
-└───────────────┘   └───────────────────┘</div>
-        <div class="blank-rows">
-          <div class="blank-row">
-            <span class="blank-num">①</span>
-            <input class="uml-input" data-ex="fm-uml" data-answer="abstract" placeholder="...">
-            <span class="blank-desc">Stéréotype de la classe Boulangerie</span>
-          </div>
-          <div class="blank-row">
-            <span class="blank-num">②</span>
-            <input class="uml-input" data-ex="fm-uml" data-answer="abstract" placeholder="...">
-            <span class="blank-desc">Modificateur de la méthode creerPain()</span>
-          </div>
-          <div class="blank-row">
-            <span class="blank-num">③</span>
-            <input class="uml-input" data-ex="fm-uml" data-answer="extends" placeholder="...">
-            <span class="blank-desc">Relation des sous-boulangeries vers Boulangerie</span>
-          </div>
-        </div>
-        <div class="ex-actions">
-          <button class="btn-check"  onclick="checkEx('fm-uml')">Vérifier</button>
-          <button class="btn-reveal" onclick="revealEx('fm-uml')">Révéler</button>
-          <button class="btn-reset"  onclick="resetEx('fm-uml')">↺</button>
-          <span class="score-msg" id="fm-uml-score"></span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── ABSTRACT FACTORY ── -->
-    <div class="ex-card creation" id="abstract-factory">
-      <div class="ex-header">
-        <span class="ex-title">Abstract Factory</span>
-        <span class="scenario-badge">Scénario : Thèmes UI (Windows / Mac)</span>
-        <span class="category-badge badge-creation">Création</span>
-      </div>
-
-      <div class="ex-section">
-        <div class="ex-section-title impl">Implémentation Java</div>
-<pre class="code-block">interface Bouton   { void afficher(); }
-interface Checkbox { void cocher(); }
-
-// Famille Windows
-class BoutonWindows   implements Bouton   { public void afficher() { System.out.println("[OK]"); } }
-class CheckboxWindows implements Checkbox { public void cocher()   { System.out.println("[x]"); } }
-
-// Famille Mac
-class BoutonMac   implements Bouton   { public void afficher() { System.out.println("(OK)"); } }
-class CheckboxMac implements Checkbox { public void cocher()   { System.out.println("(✓)"); } }
-
-// Fabrique abstraite — déclare la famille de produits
-interface <input class="code-input" data-ex="af" data-answer="FabriqueUI" style="width:10ch"> {
-    <input class="code-input" data-ex="af" data-answer="Bouton" style="width:6ch">   creerBouton();
-    Checkbox creerCheckbox();
-}
-
-// Fabrique concrète Windows
-class FabriqueWindows <input class="code-input" data-ex="af" data-answer="implements" style="width:10ch"> FabriqueUI {
-    public Bouton   creerBouton()   { return new BoutonWindows(); }
-    public Checkbox creerCheckbox() { return new CheckboxWindows(); }
-}
-
-// Fabrique concrète Mac
-class FabriqueMac implements FabriqueUI {
-    public Bouton   creerBouton()   { return new BoutonMac(); }
-    public Checkbox creerCheckbox() { return new CheckboxMac(); }
-}
-
-// Client — dépend uniquement de l'interface
-class Application {
-    private <input class="code-input" data-ex="af" data-answer="FabriqueUI" style="width:10ch"> fabrique;
-
-    public Application(FabriqueUI fabrique) {
-        this.fabrique = fabrique;
-    }
-
-    public void construire() {
-        Bouton   btn = fabrique.creerBouton();
-        Checkbox cb  = fabrique.creerCheckbox();
-        btn.afficher();
-        cb.cocher();
-    }
-}</pre>
-        <div class="ex-actions">
-          <button class="btn-check"  onclick="checkEx('af')">Vérifier</button>
-          <button class="btn-reveal" onclick="revealEx('af')">Révéler</button>
-          <button class="btn-reset"  onclick="resetEx('af')">↺</button>
-          <span class="score-msg" id="af-score"></span>
-        </div>
-      </div>
-
-      <div class="ex-section">
-        <div class="ex-section-title uml">Diagramme UML</div>
-        <div class="uml-block">
-       ┌──────────────────────────────┐
-       │  &lt;&lt;interface&gt;&gt; ①            │
-       │  + creerBouton(): Bouton     │
-       │  + creerCheckbox(): Checkbox │
-       └──────────────────────────────┘
-                     ▲
-              ───────┴────────
-              │               │
-              │ ②             │ ②
-  ┌───────────┴───┐     ┌─────┴───────────┐
-  │FabriqueWindows│     │  FabriqueMac    │
-  └───────────────┘     └─────────────────┘
-
-  Application ──③──→ FabriqueUI   (dépendance)</div>
-        <div class="blank-rows">
-          <div class="blank-row">
-            <span class="blank-num">①</span>
-            <input class="uml-input" data-ex="af-uml" data-answer="FabriqueUI" placeholder="...">
-            <span class="blank-desc">Nom de l'interface fabrique abstraite</span>
-          </div>
-          <div class="blank-row">
-            <span class="blank-num">②</span>
-            <input class="uml-input" data-ex="af-uml" data-answer="implements" placeholder="...">
-            <span class="blank-desc">Relation des fabriques concrètes → FabriqueUI</span>
-          </div>
-          <div class="blank-row">
-            <span class="blank-num">③</span>
-            <input class="uml-input" data-ex="af-uml" data-answer="utilise" data-alt="uses,dépend de,depends on" placeholder="...">
-            <span class="blank-desc">Nature du lien Application → FabriqueUI</span>
-          </div>
-        </div>
-        <div class="ex-actions">
-          <button class="btn-check"  onclick="checkEx('af-uml')">Vérifier</button>
-          <button class="btn-reveal" onclick="revealEx('af-uml')">Révéler</button>
-          <button class="btn-reset"  onclick="resetEx('af-uml')">↺</button>
-          <span class="score-msg" id="af-uml-score"></span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── BUILDER ── -->
-    <div class="ex-card creation" id="builder">
-      <div class="ex-header">
-        <span class="ex-title">Builder</span>
-        <span class="scenario-badge">Scénario : Constructeur de requêtes SQL</span>
-        <span class="category-badge badge-creation">Création</span>
-      </div>
-
-      <div class="ex-section">
-        <div class="ex-section-title impl">Implémentation Java</div>
-<pre class="code-block">class RequeteSQL {
-    private final String table;
-    private final String condition;
-    private final int limite;
-
-    private RequeteSQL(Builder builder) {
-        this.table     = builder.table;
-        this.condition = builder.condition;
-        this.limite    = builder.limite;
-    }
-
-    public static class <input class="code-input" data-ex="build" data-answer="Builder" style="width:7ch"> {
-        private String table;
-        private String condition = "";
-        private int    limite    = 100;
-
-        public Builder table(String t) {
-            this.table = t;
-            return <input class="code-input" data-ex="build" data-answer="this" style="width:4ch">; // méthode fluente
-        }
-
-        public Builder where(String c) {
-            this.condition = c;
-            return this;
-        }
-
-        public Builder limite(int l) {
-            this.limite = l;
-            return this;
-        }
-
-        public RequeteSQL <input class="code-input" data-ex="build" data-answer="build" style="width:5ch">() {
-            return new RequeteSQL(this);
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "SELECT * FROM " + table
-            + (condition.isEmpty() ? "" : " WHERE " + condition)
-            + " LIMIT " + limite;
-    }
-}
-
-// Utilisation — chaînage fluent
-RequeteSQL req = new RequeteSQL.<input class="code-input" data-ex="build" data-answer="Builder" style="width:7ch">()
-    .table("clients")
-    .where("age > 18")
-    .limite(50)
-    .<input class="code-input" data-ex="build" data-answer="build" style="width:5ch">();
-System.out.println(req); // SELECT * FROM clients WHERE age > 18 LIMIT 50</pre>
-        <div class="ex-actions">
-          <button class="btn-check"  onclick="checkEx('build')">Vérifier</button>
-          <button class="btn-reveal" onclick="revealEx('build')">Révéler</button>
-          <button class="btn-reset"  onclick="resetEx('build')">↺</button>
-          <span class="score-msg" id="build-score"></span>
-        </div>
-      </div>
-
-      <div class="ex-section">
-        <div class="ex-section-title uml">Diagramme UML</div>
-        <div class="uml-block">
-  ┌──────────────────────────────────┐
-  │           RequeteSQL             │
-  │  - table, condition, limite      │
-  │  - RequeteSQL(Builder)           │
-  │                                  │
-  │  ┌──────────────────────────┐    │
-  │  │  «inner class»  ①        │    │
-  │  │  + table(t): Builder     │    │
-  │  │  + where(c): Builder     │    │
-  │  │  + limite(l): Builder    │    │
-  │  │  + ②(): RequeteSQL       │    │
-  │  └──────────────────────────┘    │
-  └──────────────────────────────────┘
-
-  Chaque méthode retourne ③ pour le chaînage.</div>
-        <div class="blank-rows">
-          <div class="blank-row">
-            <span class="blank-num">①</span>
-            <input class="uml-input" data-ex="build-uml" data-answer="Builder" placeholder="...">
-            <span class="blank-desc">Nom de la classe interne</span>
-          </div>
-          <div class="blank-row">
-            <span class="blank-num">②</span>
-            <input class="uml-input" data-ex="build-uml" data-answer="build" placeholder="...">
-            <span class="blank-desc">Méthode terminale qui crée le produit final</span>
-          </div>
-          <div class="blank-row">
-            <span class="blank-num">③</span>
-            <input class="uml-input" data-ex="build-uml" data-answer="this" placeholder="...">
-            <span class="blank-desc">Valeur retournée par chaque setter (fluent)</span>
-          </div>
-        </div>
-        <div class="ex-actions">
-          <button class="btn-check"  onclick="checkEx('build-uml')">Vérifier</button>
-          <button class="btn-reveal" onclick="revealEx('build-uml')">Révéler</button>
-          <button class="btn-reset"  onclick="resetEx('build-uml')">↺</button>
-          <span class="score-msg" id="build-uml-score"></span>
-        </div>
-      </div>
-    </div>
 
     <!-- ═══════════════════════════════════════
          STRUCTURE
@@ -1220,7 +817,415 @@ cac40.setCours(7240.50); // → "Cours actuel : 7240.5€"</pre>
           <span class="score-msg" id="pull-uml-score"></span>
         </div>
       </div>
+    </div>    <!-- ═══════════════════════════════════════
+         CRÉATION
+    ═══════════════════════════════════════ -->
+    <div class="category-header">
+      <span class="section-title" style="padding-top:0;font-size:1.4rem">Création</span>
+      <span class="category-badge badge-creation">Creational Patterns</span>
     </div>
+
+    <!-- ── SIMPLE FACTORY ── -->
+    <div class="ex-card creation" id="simple-factory">
+      <div class="ex-header">
+        <span class="ex-title">Simple Factory</span>
+        <span class="scenario-badge">Scénario : Garage de véhicules</span>
+        <span class="category-badge badge-creation">Création</span>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title impl">Implémentation Java</div>
+<pre class="code-block">interface Vehicule {
+    void demarrer();
+}
+
+class Voiture <input class="code-input" data-ex="sf" data-answer="implements" style="width:10ch"> Vehicule {
+    public void demarrer() { System.out.println("Vroooom"); }
+}
+class Moto implements Vehicule {
+    public void demarrer() { System.out.println("Pétarade"); }
+}
+
+class FabriqueVehicule {
+    // Méthode statique — pas d'instance de FabriqueVehicule nécessaire
+    public <input class="code-input" data-ex="sf" data-answer="static" style="width:6ch"> Vehicule creer(String type) {
+        switch (type) {
+            case "voiture": return new <input class="code-input" data-ex="sf" data-answer="Voiture" style="width:7ch">();
+            case "moto"   : return new Moto();
+            default: throw new IllegalArgumentException("Type inconnu: " + type);
+        }
+    }
+}
+
+// Utilisation — appel statique, sans new FabriqueVehicule()
+Vehicule v = FabriqueVehicule.<input class="code-input" data-ex="sf" data-answer="creer" style="width:5ch">("voiture");
+v.demarrer(); // Vroooom</pre>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('sf')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('sf')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('sf')">↺</button>
+          <span class="score-msg" id="sf-score"></span>
+        </div>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title uml">Diagramme UML</div>
+        <div class="uml-block">
+  ┌────────────────────────────────┐
+  │        FabriqueVehicule        │
+  │  + ① creer(type): Vehicule     │
+  └────────────────┬───────────────┘
+                   │ «crée»
+                   ▼
+       ┌───────────────────┐
+       │  &lt;&lt;interface&gt;&gt;    │
+       │    ② Vehicule      │
+       │  + demarrer()     │
+       └─────────┬─────────┘
+                 │ ③
+        ┌────────┼────────┐
+        ▼        ▼        ▼
+     Voiture   Moto   Camion</div>
+        <div class="blank-rows">
+          <div class="blank-row">
+            <span class="blank-num">①</span>
+            <input class="uml-input" data-ex="sf-uml" data-answer="static" placeholder="...">
+            <span class="blank-desc">Modificateur de la méthode creer()</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">②</span>
+            <input class="uml-input" data-ex="sf-uml" data-answer="Vehicule" placeholder="...">
+            <span class="blank-desc">Nom de l'interface produit</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">③</span>
+            <input class="uml-input" data-ex="sf-uml" data-answer="implements" placeholder="...">
+            <span class="blank-desc">Type de relation (Voiture/Moto/Camion → Vehicule)</span>
+          </div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('sf-uml')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('sf-uml')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('sf-uml')">↺</button>
+          <span class="score-msg" id="sf-uml-score"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FACTORY METHOD ── -->
+    <div class="ex-card creation" id="factory-method">
+      <div class="ex-header">
+        <span class="ex-title">Factory Method</span>
+        <span class="scenario-badge">Scénario : Boulangeries régionales</span>
+        <span class="category-badge badge-creation">Création</span>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title impl">Implémentation Java</div>
+<pre class="code-block">interface Pain {
+    void preparer();
+    void emballer();
+}
+class Baguette implements Pain {
+    public void preparer() { System.out.println("Façonnage baguette"); }
+    public void emballer() { System.out.println("Papier baguette"); }
+}
+class Brioche implements Pain {
+    public void preparer() { System.out.println("Pétrissage brioche"); }
+    public void emballer() { System.out.println("Boîte brioche"); }
+}
+
+<input class="code-input" data-ex="fm" data-answer="abstract" style="width:8ch"> class Boulangerie {
+    // Factory Method — chaque sous-classe décide quel Pain créer
+    protected <input class="code-input" data-ex="fm" data-answer="abstract" style="width:8ch"> Pain creerPain();
+
+    // Méthode template — utilise le factory method
+    public void vendre() {
+        Pain pain = <input class="code-input" data-ex="fm" data-answer="creerPain" style="width:9ch">();
+        pain.preparer();
+        pain.emballer();
+    }
+}
+
+class BoulangerieParisienne <input class="code-input" data-ex="fm" data-answer="extends" style="width:7ch"> Boulangerie {
+    @Override
+    protected Pain creerPain() { return new Baguette(); }
+}
+
+class BoulangerieLyonnaise extends Boulangerie {
+    <input class="code-input" data-ex="fm" data-answer="@Override" style="width:9ch">
+    protected Pain creerPain() { return new Brioche(); }
+}</pre>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('fm')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('fm')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('fm')">↺</button>
+          <span class="score-msg" id="fm-score"></span>
+        </div>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title uml">Diagramme UML</div>
+        <div class="uml-block">
+  ┌──────────────────────────────────┐
+  │     «①»  Boulangerie            │
+  │  + vendre()                     │
+  │  # ② creerPain(): Pain          │
+  └──────────────────────────────────┘
+               ▲
+               │ ③
+     ┌─────────┴──────────┐
+     │                    │
+┌────┴──────────┐   ┌─────┴─────────────┐
+│ Boulangerie   │   │ Boulangerie       │
+│ Parisienne    │   │ Lyonnaise         │
+│ creerPain()   │   │ creerPain()       │
+└───────────────┘   └───────────────────┘</div>
+        <div class="blank-rows">
+          <div class="blank-row">
+            <span class="blank-num">①</span>
+            <input class="uml-input" data-ex="fm-uml" data-answer="abstract" placeholder="...">
+            <span class="blank-desc">Stéréotype de la classe Boulangerie</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">②</span>
+            <input class="uml-input" data-ex="fm-uml" data-answer="abstract" placeholder="...">
+            <span class="blank-desc">Modificateur de la méthode creerPain()</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">③</span>
+            <input class="uml-input" data-ex="fm-uml" data-answer="extends" placeholder="...">
+            <span class="blank-desc">Relation des sous-boulangeries vers Boulangerie</span>
+          </div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('fm-uml')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('fm-uml')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('fm-uml')">↺</button>
+          <span class="score-msg" id="fm-uml-score"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ABSTRACT FACTORY ── -->
+    <div class="ex-card creation" id="abstract-factory">
+      <div class="ex-header">
+        <span class="ex-title">Abstract Factory</span>
+        <span class="scenario-badge">Scénario : Thèmes UI (Windows / Mac)</span>
+        <span class="category-badge badge-creation">Création</span>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title impl">Implémentation Java</div>
+<pre class="code-block">interface Bouton   { void afficher(); }
+interface Checkbox { void cocher(); }
+
+// Famille Windows
+class BoutonWindows   implements Bouton   { public void afficher() { System.out.println("[OK]"); } }
+class CheckboxWindows implements Checkbox { public void cocher()   { System.out.println("[x]"); } }
+
+// Famille Mac
+class BoutonMac   implements Bouton   { public void afficher() { System.out.println("(OK)"); } }
+class CheckboxMac implements Checkbox { public void cocher()   { System.out.println("(✓)"); } }
+
+// Fabrique abstraite — déclare la famille de produits
+interface <input class="code-input" data-ex="af" data-answer="FabriqueUI" style="width:10ch"> {
+    <input class="code-input" data-ex="af" data-answer="Bouton" style="width:6ch">   creerBouton();
+    Checkbox creerCheckbox();
+}
+
+// Fabrique concrète Windows
+class FabriqueWindows <input class="code-input" data-ex="af" data-answer="implements" style="width:10ch"> FabriqueUI {
+    public Bouton   creerBouton()   { return new BoutonWindows(); }
+    public Checkbox creerCheckbox() { return new CheckboxWindows(); }
+}
+
+// Fabrique concrète Mac
+class FabriqueMac implements FabriqueUI {
+    public Bouton   creerBouton()   { return new BoutonMac(); }
+    public Checkbox creerCheckbox() { return new CheckboxMac(); }
+}
+
+// Client — dépend uniquement de l'interface
+class Application {
+    private <input class="code-input" data-ex="af" data-answer="FabriqueUI" style="width:10ch"> fabrique;
+
+    public Application(FabriqueUI fabrique) {
+        this.fabrique = fabrique;
+    }
+
+    public void construire() {
+        Bouton   btn = fabrique.creerBouton();
+        Checkbox cb  = fabrique.creerCheckbox();
+        btn.afficher();
+        cb.cocher();
+    }
+}</pre>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('af')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('af')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('af')">↺</button>
+          <span class="score-msg" id="af-score"></span>
+        </div>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title uml">Diagramme UML</div>
+        <div class="uml-block">
+       ┌──────────────────────────────┐
+       │  &lt;&lt;interface&gt;&gt; ①            │
+       │  + creerBouton(): Bouton     │
+       │  + creerCheckbox(): Checkbox │
+       └──────────────────────────────┘
+                     ▲
+              ───────┴────────
+              │               │
+              │ ②             │ ②
+  ┌───────────┴───┐     ┌─────┴───────────┐
+  │FabriqueWindows│     │  FabriqueMac    │
+  └───────────────┘     └─────────────────┘
+
+  Application ──③──→ FabriqueUI   (dépendance)</div>
+        <div class="blank-rows">
+          <div class="blank-row">
+            <span class="blank-num">①</span>
+            <input class="uml-input" data-ex="af-uml" data-answer="FabriqueUI" placeholder="...">
+            <span class="blank-desc">Nom de l'interface fabrique abstraite</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">②</span>
+            <input class="uml-input" data-ex="af-uml" data-answer="implements" placeholder="...">
+            <span class="blank-desc">Relation des fabriques concrètes → FabriqueUI</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">③</span>
+            <input class="uml-input" data-ex="af-uml" data-answer="utilise" data-alt="uses,dépend de,depends on" placeholder="...">
+            <span class="blank-desc">Nature du lien Application → FabriqueUI</span>
+          </div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('af-uml')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('af-uml')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('af-uml')">↺</button>
+          <span class="score-msg" id="af-uml-score"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BUILDER ── -->
+    <div class="ex-card creation" id="builder">
+      <div class="ex-header">
+        <span class="ex-title">Builder</span>
+        <span class="scenario-badge">Scénario : Constructeur de requêtes SQL</span>
+        <span class="category-badge badge-creation">Création</span>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title impl">Implémentation Java</div>
+<pre class="code-block">class RequeteSQL {
+    private final String table;
+    private final String condition;
+    private final int limite;
+
+    private RequeteSQL(Builder builder) {
+        this.table     = builder.table;
+        this.condition = builder.condition;
+        this.limite    = builder.limite;
+    }
+
+    public static class <input class="code-input" data-ex="build" data-answer="Builder" style="width:7ch"> {
+        private String table;
+        private String condition = "";
+        private int    limite    = 100;
+
+        public Builder table(String t) {
+            this.table = t;
+            return <input class="code-input" data-ex="build" data-answer="this" style="width:4ch">; // méthode fluente
+        }
+
+        public Builder where(String c) {
+            this.condition = c;
+            return this;
+        }
+
+        public Builder limite(int l) {
+            this.limite = l;
+            return this;
+        }
+
+        public RequeteSQL <input class="code-input" data-ex="build" data-answer="build" style="width:5ch">() {
+            return new RequeteSQL(this);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "SELECT * FROM " + table
+            + (condition.isEmpty() ? "" : " WHERE " + condition)
+            + " LIMIT " + limite;
+    }
+}
+
+// Utilisation — chaînage fluent
+RequeteSQL req = new RequeteSQL.<input class="code-input" data-ex="build" data-answer="Builder" style="width:7ch">()
+    .table("clients")
+    .where("age > 18")
+    .limite(50)
+    .<input class="code-input" data-ex="build" data-answer="build" style="width:5ch">();
+System.out.println(req); // SELECT * FROM clients WHERE age > 18 LIMIT 50</pre>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('build')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('build')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('build')">↺</button>
+          <span class="score-msg" id="build-score"></span>
+        </div>
+      </div>
+
+      <div class="ex-section">
+        <div class="ex-section-title uml">Diagramme UML</div>
+        <div class="uml-block">
+  ┌──────────────────────────────────┐
+  │           RequeteSQL             │
+  │  - table, condition, limite      │
+  │  - RequeteSQL(Builder)           │
+  │                                  │
+  │  ┌──────────────────────────┐    │
+  │  │  «inner class»  ①        │    │
+  │  │  + table(t): Builder     │    │
+  │  │  + where(c): Builder     │    │
+  │  │  + limite(l): Builder    │    │
+  │  │  + ②(): RequeteSQL       │    │
+  │  └──────────────────────────┘    │
+  └──────────────────────────────────┘
+
+  Chaque méthode retourne ③ pour le chaînage.</div>
+        <div class="blank-rows">
+          <div class="blank-row">
+            <span class="blank-num">①</span>
+            <input class="uml-input" data-ex="build-uml" data-answer="Builder" placeholder="...">
+            <span class="blank-desc">Nom de la classe interne</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">②</span>
+            <input class="uml-input" data-ex="build-uml" data-answer="build" placeholder="...">
+            <span class="blank-desc">Méthode terminale qui crée le produit final</span>
+          </div>
+          <div class="blank-row">
+            <span class="blank-num">③</span>
+            <input class="uml-input" data-ex="build-uml" data-answer="this" placeholder="...">
+            <span class="blank-desc">Valeur retournée par chaque setter (fluent)</span>
+          </div>
+        </div>
+        <div class="ex-actions">
+          <button class="btn-check"  onclick="checkEx('build-uml')">Vérifier</button>
+          <button class="btn-reveal" onclick="revealEx('build-uml')">Révéler</button>
+          <button class="btn-reset"  onclick="resetEx('build-uml')">↺</button>
+          <span class="score-msg" id="build-uml-score"></span>
+        </div>
+      </div>
+    </div>
+
+
 
   </main>
 </div>
